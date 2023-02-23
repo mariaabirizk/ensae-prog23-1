@@ -86,13 +86,11 @@ class Graph:
             for l in L :
                 if i in l : 
                     Signe=-1
-            if Signe=1:
+            if Signe==1:
                 U=[]
                 explorer(i)
                 L.append(U)
-        else : 
-
- 
+        return L
 
  
     def connected_components_set(self): 
