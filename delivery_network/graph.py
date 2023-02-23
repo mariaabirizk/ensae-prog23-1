@@ -74,8 +74,24 @@ class Graph:
      
  
  
-    def connected_components(self): 
-        raise NotImplementedError 
+    def connected_components(self):  
+        L=[]
+        def explorer(i):
+            U.append(i)
+            for W in self.graph[i]:
+                if W[0] not in U :
+                    explorer(W[0])
+        for i in self.graph:
+            Signe=1
+            for l in L :
+                if i in l : 
+                    Signe=-1
+            if Signe=1:
+                U=[]
+                explorer(i)
+                L.append(U)
+        else : 
+
  
 
  
