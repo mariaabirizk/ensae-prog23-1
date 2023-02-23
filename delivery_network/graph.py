@@ -75,16 +75,35 @@ class Graph:
             if src in l:
                 W=l
         if dest in W :
-            def explorer(j):
+            j=src
+            S=0
+            d={}
+            def chercher(j):
                 parent=j
-                U.append(j)
-                for W in self.graph[j]:
-                    if W[0] not in U :
-                        if W[0]=dest:
-                            errêter
-                        elif W[0]=[]
-                        explorer(W[0])
-            for i in self.graph[i]:
+                for W in (self.graph[j]):
+                    if W[0]=dest:
+                        arrêter
+                
+                Voisins=self.graph[W[0]]
+                if W[0] not in U :
+                    if W[0]=dest:
+                        errêter
+                    elif W[0]=[]
+                    explorer(W[0])
+
+            for t in self.graph[i]:
+                #On l'envoie explorer
+                chemin = explorer(t)
+                if chemin !=[]:
+                    S=0
+                    for p in chemin :
+                        S+=self.graph(p)[2]
+                    if power > S:
+                        return chemin
+            return None
+
+
+
             Signe=1
             for l in L :
                 if i in l : 
