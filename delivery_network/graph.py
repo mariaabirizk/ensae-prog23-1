@@ -69,8 +69,18 @@ class Graph:
  
 
      
-    def get_path_with_power(self, src, dest, power): 
-        raise NotImplementedError 
+    def get_path_with_power(self, src, dest, power):
+        W=[]
+        for l in self.connect_components_set() :
+            if src in l:
+                W=l
+        if dest in W :
+            S=0
+            for i in W:
+                S+=self.graph[i][2]
+            
+        else :
+            return None
      
  
  
