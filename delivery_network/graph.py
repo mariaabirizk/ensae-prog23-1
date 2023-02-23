@@ -75,10 +75,24 @@ class Graph:
             if src in l:
                 W=l
         if dest in W :
-            S=0
-            for i in W:
-                S+=self.graph[i][2]
-            
+            def explorer(j):
+                parent=j
+                U.append(j)
+                for W in self.graph[j]:
+                    if W[0] not in U :
+                        if W[0]=dest:
+                            errêter
+                        elif W[0]=[]
+                        explorer(W[0])
+            for i in self.graph[i]:
+            Signe=1
+            for l in L :
+                if i in l : 
+                    Signe=-1
+            if Signe==1:
+                U=[]
+                explorer(i)
+                L.append(U)   
         else :
             return None
      
