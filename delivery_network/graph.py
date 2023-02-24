@@ -38,7 +38,7 @@ class Graph:
             output = f"The graph has {self.nb_nodes} nodes and {self.nb_edges} edges.\n" 
             for source, destination in self.graph.items(): 
                 output += f"{source}-->{destination}\n" 
-        return output 
+        return output
 
     def add_edge(self, node1, node2, power_min, dist=1): 
         """ 
@@ -75,23 +75,25 @@ class Graph:
             if src in l:
                 W=l
         if dest in W :
-            j=src
-            S=0
+            U=[]
             d={}
             def chercher(j):
-                parent=j
                 for W in (self.graph[j]):
-                    if W[0]=dest:
-                        arrête
-                
-                Voisins=self.graph[W[0]]
-                if W[0] not in U :
-                    if W[0]=dest:
-                        errêter
-                    elif W[0]=[]
-                    explorer(W[0])
+                    w=W[0]
+                    if w not in d[j] and w not in U:
+                        U.append[w]
+                        if w==dest:
+                            return U
+                        for T in self.graph[W]:
+                            t=T[0]
+                            chercher(t)
+                    else :
+                        d[j].append(W)
+                        chercher(j)
+            chercher(src)
+                    
 
-            for t in self.graph[i]:
+            """for t in self.graph[i]:
                 #On l'envoie explorer
                 chemin = explorer(t)
                 if chemin !=[]:
@@ -100,18 +102,7 @@ class Graph:
                         S+=self.graph(p)[2]
                     if power > S:
                         return chemin
-            return None
-
-
-
-            Signe=1
-            for l in L :
-                if i in l : 
-                    Signe=-1
-            if Signe==1:
-                U=[]
-                explorer(i)
-                L.append(U)   
+            return None """
         else :
             return None
      
@@ -150,6 +141,7 @@ class Graph:
         raise NotImplementedError 
  
 
+#Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers proposés
 def graph_from_file(filename): 
     f = open("/home/onyxia/work/ensae-prog23/"+filename, "r") #On rajoute le début du chemin pour que le programme trouve le chemin du fichier 
     L = f.readlines()#On transforme le tableau en une liste de chaîne de caractères, avec une chaîne = une ligne 
