@@ -71,24 +71,33 @@ class Graph:
      
     def get_path_with_power(self, src, dest, power):
         W=[]
-        for l in self.connect_components_set() :
+        for l in self.connected_components_set() :
             if src in l:
                 W=l
+        print(W)
         if dest in W :
-            U=[]
-            d={}
+            U=[]#Trajet en cours
+            d={} # Dictionnaire des voisins indésirables #Le prof propose d'en faire une liste plutôt de gens blacklistés, pas besoin de différencier selon les voisins
             def chercher(j):
-                for W in (self.graph[j]):
+                U.append(j)
+                if j not in d :
+                    d[j]=[]
+                for W in self.graph[j]:
                     w=W[0]
                     if w not in d[j] and w not in U:
-                        U.append[w]
+                        d[j].append(w)
                         if w==dest:
+                            U.append(w)
                             return U
-                        for T in self.graph[W]:
-                            t=T[0]
-                            chercher(t)
+                        for I in self.graph[w]:
+                            i=I[0]
+                            if i not in d[w] and i not in U:
+                                chercher(i)
+                        U.pop()
+                        d[j].append(w)
+                        chercher(j)
                     else :
-                        d[j].append(W)
+                        d[j].append(w)
                         chercher(j)
             chercher(src)
                     
