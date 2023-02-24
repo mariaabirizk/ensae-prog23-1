@@ -82,7 +82,7 @@ class Graph:
                 parent=j
                 for W in (self.graph[j]):
                     if W[0]=dest:
-                        arrêter
+                        arrête
                 
                 Voisins=self.graph[W[0]]
                 if W[0] not in U :
