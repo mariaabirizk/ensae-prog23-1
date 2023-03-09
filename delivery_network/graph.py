@@ -70,48 +70,34 @@ class Graph:
 
      
     def get_path_with_power(self, src, dest, power):
-        W=[]
+        T=[]
         for l in self.connected_components_set() :
             if src in l:
-                W=l
-        print(W)
-        if dest in W :
+                T=l
+        if dest in T :
+            S=0
+            f={}
+            for t in T:
+                f[t]=False
             U=[]#Trajet en cours
-            d={} # Dictionnaire des voisins indésirables #Le prof propose d'en faire une liste plutôt de gens blacklistés, pas besoin de différencier selon les voisins
+            d=[] #Dictionnaire des voisins indésirables #Le prof propose d'en faire une liste plutôt de gens blacklistés, pas besoin de différencier selon les voisins
             def chercher(j):
+                print(U,d,self.graph[j])
                 U.append(j)
-                if j not in d :
-                    d[j]=[]
-                for W in self.graph[j]:
-                    w=W[0]
-                    if w not in d[j] and w not in U:
-                        d[j].append(w)
-                        if w==dest:
-                            U.append(w)
-                            return U
-                        for I in self.graph[w]:
-                            i=I[0]
-                            if i not in d[w] and i not in U:
-                                chercher(i)
-                        U.pop()
-                        d[j].append(w)
-                        chercher(j)
-                    else :
-                        d[j].append(w)
-                        chercher(j)
-            chercher(src)
+                S+=recherch
+                if j==dest:
+                    return U
+                else :
+                    for W in self.graph[j]:
+                        w=W[0] 
+                        if f[w]==False:
+                            f[w]=True
+                            if w not in d and w not in U:
+                                return(chercher(w))
+                            elif w in U :
+                                d.append(j)
+            return(chercher(src))
                     
-
-            """for t in self.graph[i]:
-                #On l'envoie explorer
-                chemin = explorer(t)
-                if chemin !=[]:
-                    S=0
-                    for p in chemin :
-                        S+=self.graph(p)[2]
-                    if power > S:
-                        return chemin
-            return None """
         else :
             return None
      
@@ -147,6 +133,7 @@ class Graph:
         """ 
         Should return path, min_power.  
         """
+
         raise NotImplementedError 
  
 
