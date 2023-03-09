@@ -104,7 +104,9 @@ class Graph:
  
     def connected_components(self):  
         L=[]
+        for W in self.
         def explorer(i):
+            l=[]
             U.append(i)
             for W in self.graph[i]:
                 if W[0] not in U :
@@ -165,3 +167,5 @@ def graph_from_file(filename):
             g.graph[n]=[] 
             g.nb_nodes+=1 #Le nombre d'arêtes n'a pas été modifié, mais le nombre de sommets a lui changé 
     return g 
+
+#Pour la question 7 : https://www.geeksforgeeks.org/visualize-graphs-in-python/
