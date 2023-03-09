@@ -75,28 +75,27 @@ class Graph:
             if src in l:
                 T=l
         if dest in T :
-            S=0
             f={}
             for t in T:
                 f[t]=False
             U=[]#Trajet en cours
             d=[] #Dictionnaire des voisins indésirables #Le prof propose d'en faire une liste plutôt de gens blacklistés, pas besoin de différencier selon les voisins
-            def chercher(j):
-                print(U,d,self.graph[j])
+            def chercher(j,S):
                 U.append(j)
-                S+=recherch
-                if j==dest:
-                    return U
+                if j==dest and S<=power:
+                    return (U,S)
                 else :
                     for W in self.graph[j]:
                         w=W[0] 
+                        S+=W[1]
                         if f[w]==False:
                             f[w]=True
-                            if w not in d and w not in U:
-                                return(chercher(w))
-                            elif w in U :
+                            if w not in d and w not in U and S<=power:
+                                return(chercher(w,S))
+                            elif w in U or S>power:
                                 d.append(j)
-            return(chercher(src))
+                    return(None)
+            return(chercher(src,0))
                     
         else :
             return None
@@ -133,8 +132,17 @@ class Graph:
         """ 
         Should return path, min_power.  
         """
-
-        raise NotImplementedError 
+        T=[]
+        for l in self.connected_components_set() :
+            if src in l:
+                T=l
+        if dest in T :
+            power=0
+            while self.get_path_with_power(src, dest, power)==None:
+                power+=1
+            return (self.get_path_with_power(src, dest, power), power)
+        else :
+            return None 
  
 
 #Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers proposés
