@@ -99,7 +99,7 @@ class Graph:
                     
         else :
             return None
-     
+     #Calcul de complexité à effectuer
  
  
     def connected_components(self):  
@@ -122,6 +122,7 @@ class Graph:
             if L!=[]:
                 U.append(L)
         return (U)
+    #Calcul de complexité à effectuer
  
     def connected_components_set(self): 
         """ 

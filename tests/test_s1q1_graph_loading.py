@@ -5,6 +5,9 @@ sys.path.append("delivery_network/")
 import unittest 
 from graph import Graph, graph_from_file
 
+
+
+
 class Test_GraphLoading(unittest.TestCase):
     def test_network0(self):
         g = graph_from_file("input/network.00.in")
@@ -21,6 +24,22 @@ class Test_GraphLoading(unittest.TestCase):
         self.assertEqual(g.nb_nodes, 10)
         self.assertEqual(g.nb_edges, 4)
         self.assertEqual(g.graph[1][0][2], 6)
+    
+    def test_network5(self):
+        t=Graph([])
+        t.add_edge(1,7,1,1)
+        t.add_edge(1,2,1,1)
+        t.add_edge(2,8,1,1)
+        t.add_edge(2,3,1,1)
+        t.add_edge(3,9,1,1)
+        t.add_edge(3,10,1,1)
+        t.add_edge(3,4,1,1)
+        t.add_edge(4,5,1,1)
+        t.add_edge(4,6,1,1)
+        t.add_edge(4,1,1,1)
+        self.assertEqual(t.nb_nodes,10)
+        self.assertEqual(t.nb_edges,10)
+        self.assertEqual(t.graph[1][0][2],1)
 
 if __name__ == '__main__':
     unittest.main()
