@@ -67,9 +67,33 @@ class Graph:
         self.graph[node2].append((node1,power_min,dist)) 
         self.nb_edges+=1 
  
-
-     
     def get_path_with_power(self, src, dest, power):
+        W=[]
+        #voisins_deja_visite=[]
+        for l in self.connected_components(): #l est un element de la liste obtenu par la meth comp 
+            if src in l:
+                W=l
+
+        if dest in W : #cad si dep et arrivee dans la meme comp alors on peut les relier
+            visite=[]
+            trajet=[src]
+            def explorer(ville):
+                if ville==dest:
+                    return trajet
+                visite.append(ville)
+                voisins_de_ville=self.graph[ville]
+                for voisin in voisins_de_ville: #je vais parcourir vois du depart
+                    if voisin[0] not in visite and power>=voisin[1]:
+                        trajet.append(voisin[0])
+                        resultat = explorer(voisin[0])
+                        if resultat is not None:
+                            return resultat
+                        else:
+                            trajet.pop() #cad dans le cas else on reprend un nouv vois
+                return None #c'est le cas ou pas de chemin
+        return explorer(src) 
+     
+    '''def get_path_with_power(self, src, dest, power):
         T=[]
         for l in self.connected_components_set() :
             if src in l:
@@ -87,7 +111,8 @@ class Graph:
                 else :
                     for W in self.graph[j]:
                         w=W[0] 
-                        S+=W[1]
+                        if W[1]>S :
+                            S=W[1]
                         if f[w]==False:
                             f[w]=True
                             if w not in d and w not in U and S<=power:
@@ -99,7 +124,7 @@ class Graph:
                     
         else :
             return None
-     #Calcul de complexité à effectuer
+     #Calcul de complexité à effectuer'''
  
  
     def connected_components(self):  
@@ -135,17 +160,25 @@ class Graph:
         """ 
         Should return path, min_power.  
         """
-        T=[]
-        for l in self.connected_components_set() :
-            if src in l:
-                T=l
-        if dest in T :
-            power=0
-            while self.get_path_with_power(src, dest, power)==None:
-                power+=1
-            return (self.get_path_with_power(src, dest, power), power)
-        else :
-            return None 
+         #prob avec graph[cle] mafine
+        maxi=0
+        for voisins in self.graph[src]:
+            if voisins[1]>maxi :
+                maxi=voisins[1]  #je ne vais pas faire ca pour min pour ne pas reparcourir if
+
+        puissance_min = 0
+        puissance_max = maxi
+        chemin=[]
+        while puissance_min < puissance_max:
+            puissance = (puissance_min + puissance_max) // 2
+            if self.get_path_with_power(src, dest, puissance) is not None: #cad si c est un des chemins possible j'essaie de voir s'il ya un pour une plus petite puiss
+                puissance_max = puissance
+                
+            else:
+                puissance_min = puissance + 1  #on augmente la puiss pour arriver a une puisssance efficace
+
+        chemin=self.get_path_with_power(src,dest,puissance_max) #on retourne le chemin pr la puiss
+        return (chemin, puissance_max)
  
 
 #Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers proposés
