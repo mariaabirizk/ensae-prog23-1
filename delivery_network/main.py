@@ -20,7 +20,7 @@ def Temps(g, filename):
     lignes = machin(filename)
     for i in range(20):
         l=lignes[i]
-        src = l[0] ; dest=l[1]
+        src = int(l[0]) ; dest=int(l[1])
         t1_start = perf_counter()
         g.min_power(src, dest)
         t1_stop = perf_counter()
@@ -29,7 +29,7 @@ def Temps(g, filename):
     for l in L:
         S+=l
     Tmoy= S/len(L)
-    return Tmoy*(g.nb_nodes-1)*(g.nb_nodes)
+    return Tmoy*(int(len(routes)))
 
 print(Temps(g, "routes.2.in")) 
 #g=Graph([]) 
