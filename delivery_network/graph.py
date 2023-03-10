@@ -66,7 +66,22 @@ class Graph:
         self.graph[node1].append((node2,power_min,dist)) 
         self.graph[node2].append((node1,power_min,dist)) 
         self.nb_edges+=1 
- 
+    
+    def explorer1(self,ville,dest,visite,power,trajet):
+        if ville==dest:
+            return trajet
+        visite.append(ville)
+        voisins_de_ville=self.graph[ville]
+        for voisin in voisins_de_ville: #je vais parcourir vois du depart
+            if voisin[0] not in visite and power>=voisin[1]:
+                trajet.append(voisin[0])
+                resultat = self.explorer1(voisin[0],dest,visite,power,trajet)
+                if resultat is not None:
+                    return resultat
+                else:
+                    trajet.pop() #cad dans le cas else on reprend un nouv vois
+        return None #c'est le cas ou pas de chemin
+
     def get_path_with_power(self, src, dest, power):
         W=[]
         #voisins_deja_visite=[]
@@ -77,21 +92,9 @@ class Graph:
         if dest in W : #cad si dep et arrivee dans la meme comp alors on peut les relier
             visite=[]
             trajet=[src]
-            def explorer(ville):
-                if ville==dest:
-                    return trajet
-                visite.append(ville)
-                voisins_de_ville=self.graph[ville]
-                for voisin in voisins_de_ville: #je vais parcourir vois du depart
-                    if voisin[0] not in visite and power>=voisin[1]:
-                        trajet.append(voisin[0])
-                        resultat = explorer(voisin[0])
-                        if resultat is not None:
-                            return resultat
-                        else:
-                            trajet.pop() #cad dans le cas else on reprend un nouv vois
-                return None #c'est le cas ou pas de chemin
-        return explorer(src) 
+            return self.explorer1(src,dest,visite,power,trajet) 
+        else : 
+            return None
      
     '''def get_path_with_power(self, src, dest, power):
         T=[]
@@ -125,14 +128,9 @@ class Graph:
         else :
             return None
      #Calcul de complexité à effectuer'''
- 
- 
-    def connected_components(self):  
-        U=[]
-        f={}
-        for W in self.graph :
-            f[W]=False
-        def explorer(i,visited):
+    
+    #Fonction annexe pour connected_components
+    def explorer2(self,i,visited):
             L=[]
             if self.graph[i]==[]:
                 L=[i]
@@ -140,10 +138,16 @@ class Graph:
                 if visited[W[0]]==False :
                     visited[W[0]]=True
                     L.append(W[0])
-                    L=L+explorer(W[0], visited)
+                    L=L+self.explorer2(W[0], visited)
             return L
+ 
+    def connected_components(self):  
+        U=[]
+        f={}
+        for W in self.graph :
+            f[W]=False      
         for i in self.graph:
-            L=explorer(i,f)
+            L=self.explorer2(i,f)
             if L!=[]:
                 U.append(L)
         return (U)
@@ -203,3 +207,13 @@ def graph_from_file(filename):
     return g 
 
 #Pour la question 7 : https://www.geeksforgeeks.org/visualize-graphs-in-python/
+
+'''def kruskal(g) :
+    g_mst=Graph([])
+    #Trier les arêtes du graphe 
+    for u
+    for arêtes in ensemble_des_arêtes_trié :
+        if u !=v :
+            g_mst.add_edge(u, v, truc)
+
+    return (g_mst)'''
