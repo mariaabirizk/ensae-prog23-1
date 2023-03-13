@@ -55,86 +55,79 @@ class Graph:
             Distance between node1 and node2 on the edge. Default is 1. 
         """ 
          
+         #On vérifie tour à tour si les noeuds sont déjà dans le graphe.
         if node1 not in self.nodes: 
-            self.nodes.append(node1) 
-            self.graph[node1]=[] 
-            self.nb_nodes+=1 
+            self.nodes.append(node1) #Si ça n'est pas le cas, on les ajoute aux noeuds...
+            self.graph[node1]=[] #... au dictionnaire représentant le graphe pour povoir lui ajouter des voisins...
+            self.nb_nodes+=1 #... et enfin on ajoute +1 au nombre de noeuds du graphe.
+        
+        #On fait de même pour le deuxième noeud
         if node2 not in self.nodes: 
             self.nodes.append(node2) 
             self.graph[node2]=[] 
             self.nb_nodes+=1 
+        
+        #On déclare ensuite chacun des noeuds comme le voisin de lautre en les ajoutant mutuellement à leurs listes de voisins.
         self.graph[node1].append((node2,power_min,dist)) 
         self.graph[node2].append((node1,power_min,dist)) 
+        
+        #Et enfin, on ajoute +1 au nombre d'arêtes du graphe.
         self.nb_edges+=1 
     
+    #On implémente une fonction auxiliaire récursive explorer1, qui servira pour la fonction get_path_with_power.
+    #'ville' et 'dest' sont deux villes ('dest' est la destination entrée dans get_path_with_power).
+    #'visite' est la liste des villes déjà visitées.
+    #'power' est la puissance entrée dans get_path_with_power.
+    #'trajet' contient la liste des villes qui forment le trajet en cours, partant de la ville de départ ('src').
+    
     def explorer1(self,ville,dest,visite,power,trajet):
-        if ville==dest:
-            return trajet
-        visite.append(ville)
-        voisins_de_ville=self.graph[ville]
-        for voisin in voisins_de_ville: #je vais parcourir vois du depart
-            if voisin[0] not in visite and power>=voisin[1]:
-                trajet.append(voisin[0])
+        if ville==dest: #On se place dans le cas dans lequel on arrive à destination.
+            return trajet #On renvoie le trajet effectué, qui est un trajet effectif pour reliser 'src' à 'dest'.
+        
+        visite.append(ville) #On déclare 'ville' comme un ville visitée.
+        voisins_de_ville=self.graph[ville] #On pose une nouvelle liste de listes, dont chaque premier élément est le numéro d'un voisin de 'ville'.
+        
+        for voisin in voisins_de_ville: #On parcourt tous les voisins de 'ville'.
+            
+            if voisin[0] not in visite and power>=voisin[1]: #On se place dans le cas où la ville voisine n'a pas été visitée, et la puissance du camion est assez grande pour passer par cette arête.
+                trajet.append(voisin[0]) #On ajoute alors le voisin au trajet.
                 resultat = self.explorer1(voisin[0],dest,visite,power,trajet)
-                if resultat is not None:
-                    return resultat
-                else:
-                    trajet.pop() #cad dans le cas else on reprend un nouv vois
-        return None #c'est le cas ou pas de chemin
+                if resultat is not None: #On se place dans le cas où passer par cette ville ne nous empêche pas de rallier 'dest' et 'src'.
+                    return resultat 
+                else: #On se place dans le cas où on ne parvient pas à rallier 'dest' et 'src' en passant par 'voisin[0]'
+                    trajet.pop() #Dans ce cas, on enlève simplement 'voisin[0]' (le dernier élément du trajet) du trajet. On ne rebouclera pas car désormais, voisin[0] est dans 'visite'.
+       
+        return None #Si on arrive ici, c'est que tous les voisins de 'ville' ont soit déjà été visités sans succès, soit que le camion ne pourra y accéder en passant par 'ville'. Il a donc été impossible de relier 'src' et 'dest' en passant par 'voisin' : on renvoie 'None'.
 
+    #On passe à la fonction en elle-même.
     def get_path_with_power(self, src, dest, power):
+        
+        #On cherche la composante connexe de 'src'. 
         W=[]
-        #voisins_deja_visite=[]
         for l in self.connected_components(): #l est un element de la liste obtenu par la meth comp 
             if src in l:
                 W=l
+        #Comme 'self.connected_components()' est une partition des noeuds du graphe, il y aura forcément un et un seul 'l' dans 'self.connected_components()' tel que 'W=l'.
 
-        if dest in W : #cad si dep et arrivee dans la meme comp alors on peut les relier
-            visite=[]
-            trajet=[src]
-            return self.explorer1(src,dest,visite,power,trajet) 
-        else : 
+        if dest in W : #On se place dans le cas où 'src' et 'dest' sont dans la même composante connexe.
+            visite=[] #On initialise les voisins visités de 'src' à l'ensemble vide.
+            trajet=[src] #On initialise le trajet pour qu'il commence toujours par 'src'.
+            return self.explorer1(src,dest,visite,power,trajet) #On utilise la fonction auxiliaire définie ci-dessus.
+        
+        else : #On se place dans le cas où 'src' et 'dest' ne sont pas dans la même composante connxe, c'est-à-dire qu'il n'existe même pas de chemin les reliant (indépendamment de la puissance).
             return None
      
-    '''def get_path_with_power(self, src, dest, power):
-        T=[]
-        for l in self.connected_components_set() :
-            if src in l:
-                T=l
-        if dest in T :
-            f={}
-            for t in T:
-                f[t]=False
-            U=[]#Trajet en cours
-            d=[] #Dictionnaire des voisins indésirables #Le prof propose d'en faire une liste plutôt de gens blacklistés, pas besoin de différencier selon les voisins
-            def chercher(j,S):
-                U.append(j)
-                if j==dest and S<=power:
-                    return (U,S)
-                else :
-                    for W in self.graph[j]:
-                        w=W[0] 
-                        if W[1]>S :
-                            S=W[1]
-                        if f[w]==False:
-                            f[w]=True
-                            if w not in d and w not in U and S<=power:
-                                return(chercher(w,S))
-                            elif w in U or S>power:
-                                d.append(j)
-                    return(None)
-            return(chercher(src,0))
-                    
-        else :
-            return None
-     #Calcul de complexité à effectuer'''
+
     
-    #Fonction annexe pour connected_components
+    #On implémente une fonction récusrive annexe explorer2 pour connected_components. 
+    #'i' est un numéro de noeud.
+    #'visited' est un dictionnaire associant à chaque noeud du graphe un booléen ('True' s'il a déjà été visité, 'False' sinon). 
     def explorer2(self,i,visited):
-            L=[]
-            if self.graph[i]==[]:
-                L=[i]
-            for W in self.graph[i]:
+            L=[] #'L' est une liste représentant la composante connexe de 'i'.
+            if self.graph[i]==[]: #Si 'i' n'a aucun voisin... 
+                L=[i] #... alors la composante connexe n'est composée que du noeud 'i'.
+            
+            for W in self.graph[i]: 
                 if visited[W[0]]==False :
                     visited[W[0]]=True
                     L.append(W[0])
@@ -205,8 +198,6 @@ def graph_from_file(filename):
             g.graph[n]=[] 
             g.nb_nodes+=1 #Le nombre d'arêtes n'a pas été modifié, mais le nombre de sommets a lui changé 
     return g 
-
-#Pour la question 7 : https://www.geeksforgeeks.org/visualize-graphs-in-python/
 
 '''def kruskal(g) :
     g_mst=Graph([])
