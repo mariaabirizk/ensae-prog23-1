@@ -109,9 +109,9 @@ class Graph:
                 W=l
         #Comme 'self.connected_components()' est une partition des noeuds du graphe, il y aura forcément un et un seul 'l' dans 'self.connected_components()' tel que 'W=l'.
 
-        if dest in W : #On se place dans le cas où 'src' et 'dest' sont dans la même composante connexe.
-            visite=[] #On initialise les voisins visités de 'src' à l'ensemble vide.
-            trajet=[src] #On initialise le trajet pour qu'il commence toujours par 'src'.
+        if dest in W :      #On se place dans le cas où 'src' et 'dest' sont dans la même composante connexe.
+            visite=[]       #On initialise les voisins visités de 'src' à l'ensemble vide.
+            trajet=[src]    #On initialise le trajet pour qu'il commence toujours par 'src'.
             return self.explorer1(src,dest,visite,power,trajet) #On utilise la fonction auxiliaire définie ci-dessus.
         
         else : #On se place dans le cas où 'src' et 'dest' ne sont pas dans la même composante connxe, c'est-à-dire qu'il n'existe même pas de chemin les reliant (indépendamment de la puissance).
@@ -123,36 +123,44 @@ class Graph:
     #'i' est un numéro de noeud.
     #'visited' est un dictionnaire associant à chaque noeud du graphe un booléen ('True' s'il a déjà été visité, 'False' sinon). 
     def explorer2(self,i,visited):
-            L=[] #'L' est une liste représentant la composante connexe de 'i'.
-            if self.graph[i]==[]: #Si 'i' n'a aucun voisin... 
-                L=[i] #... alors la composante connexe n'est composée que du noeud 'i'.
+            L=[]    #'L' est une liste représentant la composante connexe de 'i'.
+            if self.graph[i]==[]:   #Si 'i' n'a aucun voisin... 
+                L=[i]               #... alors la composante connexe n'est composée que du noeud 'i'.
             
-            for W in self.graph[i]: 
-                if visited[W[0]]==False :
-                    visited[W[0]]=True
-                    L.append(W[0])
-                    L=L+self.explorer2(W[0], visited)
+            for W in self.graph[i]: #Sinon, on parcourt les voisins de 'i'.
+                if visited[W[0]]==False :   #Cas où 'W[0]' n'a pas été visité.
+                    visited[W[0]]=True      #On le déclare alors comme visité.
+                    L.append(W[0])          #On le rajoute à la composante connexe de 'i' (car il est dans ses voisins).
+                    L=L+self.explorer2(W[0], visited) #On rappelle la fonction pour parcourir tous les voisins des voisins.
+            
             return L
  
+    #On implémente la fonction en elle-même.
     def connected_components(self):  
-        U=[]
-        f={}
+        U=[] #'U' est une liste de listes, représentant la liste des composantes connexes.
+        
+        #On initialise le dictionnaire des noeuds de telle sorte que chacun est considéré comme "non visité".
+        visited={} 
         for W in self.graph :
-            f[W]=False      
+            visited[W]=False   
+
+        #On exécute alors le programme auxiliaire explorer1 pour tous les noeuds du graphe   
         for i in self.graph:
-            L=self.explorer2(i,f)
-            if L!=[]:
+            L=self.explorer2(i,visited)
+            if L!=[]: #Cas où la composante connexe de 'i' n'a pas déjà été rentrée dans 'U'.
                 U.append(L)
+        
         return (U)
-    #Calcul de complexité à effectuer
- 
+
     def connected_components_set(self): 
         """ 
         The result should be a set of frozensets (one per component),  
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})} 
         """ 
         return set(map(frozenset, self.connected_components())) 
-     
+
+
+
     def min_power(self, src, dest): 
         """ 
         Should return path, min_power.  
@@ -178,10 +186,10 @@ class Graph:
         return (chemin, puissance_max)
  
 
-#Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers proposés
+#Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers 'network' proposés dans le dossier 'input'.
 def graph_from_file(filename): 
     f = open("/home/onyxia/work/ensae-prog23/"+filename, "r") #On rajoute le début du chemin pour que le programme trouve le chemin du fichier 
-    L = f.readlines()#On transforme le tableau en une liste de chaîne de caractères, avec une chaîne = une ligne 
+    L = f.readlines()   #On transforme le tableau en une liste de chaîne de caractères, avec une chaîne = une ligne 
     lignes=[] 
     g=Graph([]) 
     for i in range(1,len(L)): 
