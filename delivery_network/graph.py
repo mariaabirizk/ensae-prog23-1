@@ -86,16 +86,21 @@ class Graph:
         
         visite.append(ville) #On déclare 'ville' comme un ville visitée.
         
-        for voisin in self.graph[ville]: #On parcourt tous les voisins de 'ville'.
-            if voisin[0] not in visite and power>=voisin[1]: #On se place dans le cas où la ville voisine n'a pas été visitée, et la puissance du camion est assez grande pour passer par cette arête.
-                trajet.append(voisin[0]) #On ajoute alors le voisin au trajet.
-                resultat = self.explorer1(voisin[0],dest,visite,power,trajet)
-                if resultat is not None: #On se place dans le cas où passer par cette ville ne nous empêche pas de rallier 'dest' et 'src'.
-                    return resultat 
-                else: #On se place dans le cas où on ne parvient pas à rallier 'dest' et 'src' en passant par 'voisin[0]'
-                    trajet.pop() #Dans ce cas, on enlève simplement 'voisin[0]' (le dernier élément du trajet) du trajet. On ne rebouclera pas car désormais, voisin[0] est dans 'visite'.
-       
-        return None #Si on arrive ici, c'est que tous les voisins de 'ville' ont soit déjà été visités sans succès, soit que le camion ne pourra y accéder en passant par 'ville'. Il a donc été impossible de relier 'src' et 'dest' en passant par 'voisin' : on renvoie 'None'.
+        for voisins in self.graph[ville]: #On parcourt tous les voisins de 'ville'.
+            voisin=voisins[0] #'voisin' désigne le numéro du noeud voisin
+            puissance=voisins[1] #'puissance' désigne la puissance minimale nécessaire pour parcourir l'arête
+            if voisin == dest: #On regarde si la ville voisins est la ville d'arrivée
+                if power >= puissance: #On 
+                    trajet.append(dest)
+                    return trajet
+
+            else:
+                if voisin not in visite and power>=puissance:
+                    trajet.append(voisin)
+                    if self.explorer1(voisin,dest,visite,power,trajet) is None:
+                        trajet.pop( ) #pour effacer toutes les villes ajouter inutilles
+                    else:
+                        return trajet
 
     #On passe à la fonction en elle-même.
     def get_path_with_power(self, src, dest, power):
