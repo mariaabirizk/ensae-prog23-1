@@ -32,6 +32,22 @@ class Test_Reachability(unittest.TestCase):
             self.assertIn(t.get_path_with_power(1, 5, 1), [[1, 2, 3, 4, 5], [1,4,5]])
             self.assertEqual(t.get_path_with_power(1, 5, 0),None)
             self.assertIn(t.get_path_with_power(10, 7, 1),[[10,3,2,1,7],[10,3,4,1,7]])
+        
+        def test_network6(self):
+            t=Graph([])
+            t.add_edge(1,2,1,1)
+            t.add_edge(1,3,1,1)
+            t.add_edge(1,4,1,1)
+            t.add_edge(1,5,1,1)
+            t.add_edge(2,3,1,1)
+            t.add_edge(2,4,1,1)
+            t.add_edge(2,5,1,1)
+            t.add_edge(3,4,1,1)
+            t.add_edge(3,5,1,1)
+            t.add_edge(4,5,1,1)
+            self.assertIn(t.get_path_with_power(1, 5, 1), [[1, 2, 3, 4, 5], [1,4,5]])
+            self.assertEqual(t.get_path_with_power(1, 5, 0),None)
+            self.assertIn(t.get_path_with_power(10, 7, 1),[[10,3,2,1,7],[10,3,4,1,7]]
 
 if __name__ == '__main__':
     unittest.main()

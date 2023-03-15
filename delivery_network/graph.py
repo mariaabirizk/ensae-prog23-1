@@ -210,6 +210,43 @@ def graph_from_file(filename):
             g.nb_nodes+=1 #Le nombre d'arêtes n'a pas été modifié, mais le nombre de sommets a lui changé 
     return g 
 
+
+#Question 10 
+#On cherche ici à implémenter une fonction qui permet d'estimer le temps pour calculer la puissance minimale sur un ensemble de trajets.
+
+#On commence par implémenter une fonction auxiliaire, qui lit un fichier de type 'routes.x.in' (tableau d'entiers) et renvoie ce tableau comme une liste de listes (une liste d'entiers par ligne)
+def lecture(filename): 
+    f = open("/home/onyxia/work/ensae-prog23/input/"+filename, "r") #On rajoute le début du chemin pour que le programme trouve le chemin du fichier 
+    L = f.readlines()#On transforme le tableau en une liste de chaîne de caractères, avec une chaîne = une ligne 
+    lignes=[] 
+    for i in range(1,len(L)): 
+        lignes.append(L[i].split()) #"lignes" est une liste, donc les éléments (qui représentent les lignes de notre tableau) sont des listes de chaînes de caractères 
+    return lignes 
+
+#On arrive à la fonction en elle-même, qui prend en entrée un fichier (de types 'routes.x.in') et un graphe 'g' (qu'on doit prendre comme le graphe associé à l'ensemble des routes du fichier 'routes.x.in' choisi).
+
+from time import perf_counter
+
+def Temps(g, filename):
+    L=[] #'L' contiendra tous les temps d'exécutions de 'min_power' pour les premières lignes. 
+    lignes = lecture(filename) #On utilise la fonction auxiliaire pour obtenir une liste de listes d'entiers.
+    for i in range(20): #On prend les 20 premiers trajets
+        l=lignes[i]     #'l' est la i-ème ligne correspondant au i-ème trajet du tableau.
+        src = int(l[0]) ; dest=int(l[1]) #Dans cette ligne, le premier entier correspond au noeud de départ, et le deuxième au noeud d'arrivée.
+        t1_start = perf_counter()
+        g.min_power(src, dest)
+        t1_stop = perf_counter()
+        L.append(t1_stop - t1_start) #On ajoute à la liste 'L' le temps qu'a mis 'min_power' pour s'exécuter.
+    
+    #On cherche ensuite à donner le temps global (on ne se réduit plus qu'aux 20 premières lignes).
+    S=0
+    #On fait la somme de tous les temps
+    for l in L:
+        S+=l 
+    Tmoy= S/len(L)
+    #Renvoie le temps moyen d'exécution de 'min_power' pour un seul trajet.
+    return Tmoy*(int(len(lignes))) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
+
 '''def kruskal(g) :
     g_mst=Graph([])
     #Trier les arêtes du graphe 

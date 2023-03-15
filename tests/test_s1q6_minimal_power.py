@@ -28,6 +28,22 @@ class Test_MinimalPower(unittest.TestCase):
             t.add_edge(4,6,1,1)
             t.add_edge(4,1,1,1)
             self.assertEqual(t.min_power(1, 5)[1],1)
+    
+    def test_network6(self):
+            t=Graph([])
+            t.add_edge(1,2,2,1)
+            t.add_edge(1,3,2,1)
+            t.add_edge(1,4,2,1)
+            t.add_edge(1,5,2,1)
+            t.add_edge(2,3,2,1)
+            t.add_edge(2,4,2,1)
+            t.add_edge(2,5,2,1)
+            t.add_edge(3,4,2,1)
+            t.add_edge(3,5,2,1)
+            t.add_edge(4,5,1,1)
+            self.assertEqual(t.min_power(1, 2)[1],2)
+            self.assertEqual(t.min_power(3,4)[1],2)
+            self.assertEqual(t.min_power(4, 5)[1],1)
 
 if __name__ == '__main__':
     unittest.main()
