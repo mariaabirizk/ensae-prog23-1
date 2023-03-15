@@ -159,32 +159,31 @@ class Graph:
         """ 
         return set(map(frozenset, self.connected_components())) 
 
-
-
     def min_power(self, src, dest): 
-        """ 
-        Should return path, min_power.  
-        """
-         #prob avec graph[cle] mafine
+        
+        # On recherche d'abord l'arête qui représente la plus grande puissance dans tout le graphe.
         maxi=0
-        for voisins in self.graph[src]:
-            if voisins[1]>maxi :
-                maxi=voisins[1]  #je ne vais pas faire ca pour min pour ne pas reparcourir if
+        for node in self.nodes: 
+            for voisins in self.graph[node]:
+                if voisins[1]>maxi :
+                    maxi=voisins[1]  
+        #On ne fait pas la même chose pour la puissance minimale, pour ne pas reparcourir de boucle 'if'. Partir de 0 suffit.
 
-        puissance_min = 0
-        puissance_max = maxi
-        chemin=[]
-        while puissance_min < puissance_max:
-            puissance = (puissance_min + puissance_max) // 2
-            if self.get_path_with_power(src, dest, puissance) is not None: #cad si c est un des chemins possible j'essaie de voir s'il ya un pour une plus petite puiss
-                puissance_max = puissance
-                
+        puiss_min=0
+        puiss_max=maxi
+        chemin =[]
+        
+        # La recherche binaire consiste à diviser en 2 parties à peu près égales le segment [puiss_min, puiss_max].
+        while puiss_min < puiss_max :               # Si on met '<=', en cas d'égalité, on aura 'puiss=0' et après 'puiss_min=0' et on pourrait rentrer dans des boucles infinies.
+            puiss = (puiss_max + puiss_min)//2      #On prend un entier "à peu près" au milieu de 'puiss_min' et 'puiss_max'.
+            if self.get_path_with_power(src, dest, puiss) is not None: #On se place dans le cas où il a été possible de relier les deux villes avec la puissance fournie.
+                puiss_max=puiss #On essaye de trouver une puissance plus petite que 'puiss' : 'puiss' devient la borne supérieure de la recherche.
             else:
-                puissance_min = puissance + 1  #on augmente la puiss pour arriver a une puisssance efficace
-
-        chemin=self.get_path_with_power(src,dest,puissance_max) #on retourne le chemin pr la puiss
-        return (chemin, puissance_max)
- 
+                puiss_min = puiss+1 # Comme la puissance "puiss" ne suffit pas pour le parcours, on recherche dans une puissance supérieure à 'puiss'.
+                                    # Si on ne rajoute pas le '+1', on aura un problème quand on trouve la puiss minimale la boucle while rstera infini
+        
+        chemin= self.get_path_with_power(src, dest, puiss_max) # A la dernière itération, 'puiss' est modifiée et on rentrera dans le cas else donc on ne peut pas mettre puiss
+        return (chemin, puiss_max)
 
 #Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers 'network' proposés dans le dossier 'input'.
 def graph_from_file(filename): 
