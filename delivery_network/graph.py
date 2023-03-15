@@ -248,11 +248,13 @@ def Temps(g, filename):
     return Tmoy*(len(lignes)) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
 
 #Question 12 (Non terminée)
-def kruskal(graphe):
-    #1-On doit retourner un élément de type "Graph" de même nombre de noeuds que 'graphe'.
-    nouvgraphe=Graph([])
+#Pour le compte-rendu, cette fonction 'kruskal' n'est pas notre version finale : on n'a pas encore obtenu les résultats attendus.
+def kruskal(graphe): #Trions la liste des arêtes.
+    #1-Doit retourner un élément de type 'Graph' de même nombre de noeuds que 'graphe'.
+    nouvgraphe=Graph()
 
     #2- Trions les arêtes de "graphe" par ordre croissant.
+
     d={} # Je veux stocker dans 'd' les arêtes et la puissance associée à chacune.
     l=[] #Je veux stocker dans 'l' les puissances.
     for i in range (0,len(graphe.graph())):
@@ -260,14 +262,17 @@ def kruskal(graphe):
             if (i,voisin[0]) or (voisin[0],i) not in d:
                 d[voisin[1]].append(i,voisin[0])
                 l.append(voisin[1])
-    #on obtient ainsi 'd' un dictionnaire dont les clés sont les puissances des arêtes et les valeurs sont les arêtes.
+    #On obtient ainsi 'd' un dictionnaire dont les clés sont les puissances des arêtes et les valeurs sont les arêtes.
     l.sort()
-    #A présent, pour accéder aux arêtes de puissance dans 'l': on n'a qu'à faire 'd[la puissance en question]'.
+    #A présent pour accéder aux arêtes de puissance dans 'l', on n'a qu'à faire 'd[la puissance en question]'.
 
-    #3-Construisons nouvgraphe
-    for j in range (0,len(l)): #pour une puissance j 
-        for arete in d[l[j]]: #d[l[j]] peut contenir plusieurs aretes 
-            if nouvgraphe.get_path_with_power(arete[0],arete[1], l[j]): 
+    #3-Construisons 'nouvgraphe'
+    for j in range (0,len(l)): #pour une puissance 'j' 
+        for arete in d[l[j]]: #'d[l[j]]' peut contenir plusieurs arêtes.
+
+            #Dans 'if' on met une condition pour ne pas former de cycle en ajoutant cette nouvelle arête.
+            # Si les deux extrémités des arêtes ont été visitées plus que 2 fois on risque d'obtenir un cycle si on la rajoute une 3e.
+            if nouvgraphe.get_path_with_power(arete[0], arete[1], l[-1]) is not None:
                 nouvgraphe.add_edge(arete[0],arete[1],l[j])
 
-    return ​nouvgraphe
+    return (nouvgraphe)
