@@ -94,7 +94,7 @@ class Graph:
                     trajet.append(dest) 
                     return trajet #... alors cela signifie qu'on est arrivés au résultat, donc on le renvoie
 
-            else: #On se place dans le cas où voilà
+            else: #On se place dans le cas où la ville qu'on regarde n'est pas la ville d'arrivée, ou qu'elle l'est mais qu'on ne peut pas l'atteindre par le chemin choisi.
                 if voisin not in visite and power>=puissance: #On se place dans le cas où le voisin n'est pas visité, et on a assez de puissance pour aller le rejoindre.
                     trajet.append(voisin) #On peut donc l'ajouter au trajet
                     if self.explorer1(voisin,dest,visite,power,trajet) is None: #Si on obtient "None", c'est qu'on a fait toute la boucle avec 'voisin' sans arriver à relier la ville à 'dest'.
