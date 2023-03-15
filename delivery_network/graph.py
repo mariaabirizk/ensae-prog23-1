@@ -85,10 +85,8 @@ class Graph:
             return trajet #On renvoie le trajet effectué, qui est un trajet effectif pour reliser 'src' à 'dest'.
         
         visite.append(ville) #On déclare 'ville' comme un ville visitée.
-        voisins_de_ville=self.graph[ville] #On pose une nouvelle liste de listes, dont chaque premier élément est le numéro d'un voisin de 'ville'.
         
-        for voisin in voisins_de_ville: #On parcourt tous les voisins de 'ville'.
-            
+        for voisin in self.graph[ville]: #On parcourt tous les voisins de 'ville'.
             if voisin[0] not in visite and power>=voisin[1]: #On se place dans le cas où la ville voisine n'a pas été visitée, et la puissance du camion est assez grande pour passer par cette arête.
                 trajet.append(voisin[0]) #On ajoute alors le voisin au trajet.
                 resultat = self.explorer1(voisin[0],dest,visite,power,trajet)
