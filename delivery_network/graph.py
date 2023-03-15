@@ -247,12 +247,27 @@ def Temps(g, filename):
     #Renvoie le temps moyen d'exécution de 'min_power' pour un seul trajet.
     return Tmoy*(int(len(lignes))) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
 
-'''def kruskal(g) :
-    g_mst=Graph([])
-    #Trier les arêtes du graphe 
-    for u
-    for arêtes in ensemble_des_arêtes_trié :
-        if u !=v :
-            g_mst.add_edge(u, v, truc)
+#Question 12
+def kruskal(graphe):
+    #1-On doit retourner un élément de type "Graph" de même nombre de noeuds que 'graphe'.
+    nouvgraphe=Graph([])
 
-    return (g_mst)'''
+    #2- Trions les arêtes de "graphe" par ordre croissant.
+    d={} # Je veux stocker dans 'd' les arêtes et la puissance associée à chacune.
+    l=[] #Je veux stocker dans 'l' les puissances.
+    for i in range (0,len(graphe.graph())):
+        for voisin in graphe.graph[i]: #cad je regarde pour le noeud 'i' ses voisins.
+            if (i,voisin[0]) or (voisin[0],i) not in d:
+                d[voisin[1]].append(i,voisin[0])
+                l.append(voisin[1])
+    #on obtient ainsi 'd' un dictionnaire dont les clés sont les puissances des arêtes et les valeurs sont les arêtes.
+    l.sort()
+    #A présent, pour accéder aux arêtes de puissance dans 'l': on n'a qu'à faire 'd[la puissance en question]'.
+
+    #3-Construisons nouvgraphe
+    for j in range (0,len(l)): #pour une puissance j 
+        for arete in d[l[j]]: #d[l[j]] peut contenir plusieurs aretes 
+            if :
+                nouvgraphe.add_edge(arete[0],arete[1],l[j])
+
+    return ​nouvgraphe
