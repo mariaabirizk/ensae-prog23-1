@@ -89,16 +89,17 @@ class Graph:
         for voisins in self.graph[ville]: #On parcourt tous les voisins de 'ville'.
             voisin=voisins[0] #'voisin' désigne le numéro du noeud voisin
             puissance=voisins[1] #'puissance' désigne la puissance minimale nécessaire pour parcourir l'arête
-            if voisin == dest: #On regarde si la ville voisins est la ville d'arrivée
-                if power >= puissance: #On 
-                    trajet.append(dest)
-                    return trajet
+            if voisin == dest: #On regarde si la ville voisine est la ville d'arrivée...
+                if power >= puissance: #...et si on a la puissance suffisante pour parcourir le chemin...
+                    trajet.append(dest) 
+                    return trajet #... alors cela signifie qu'on est arrivés au résultat, donc on le renvoie
 
-            else:
-                if voisin not in visite and power>=puissance:
-                    trajet.append(voisin)
-                    if self.explorer1(voisin,dest,visite,power,trajet) is None:
-                        trajet.pop( ) #pour effacer toutes les villes ajouter inutilles
+            else: #On se place dans le cas où voilà
+                if voisin not in visite and power>=puissance: #On se place dans le cas où le voisin n'est pas visité, et on a assez de puissance pour aller le rejoindre.
+                    trajet.append(voisin) #On peut donc l'ajouter au trajet
+                    if self.explorer1(voisin,dest,visite,power,trajet) is None: #Si on obtient "None", c'est qu'on a fait toute la boucle avec 'voisin' sans arriver à relier la ville à 'dest'.
+                        trajet.pop( )   #Cela signifie que c'était une mauvaise idée de passer par 'voisin', et on le retire du trajet.
+                                        #On remarque qu'on ne rebouclera pas à l'infini car désormais 'voisin' est dans 'visiste'.
                     else:
                         return trajet
 
