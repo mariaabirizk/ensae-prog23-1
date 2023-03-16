@@ -216,11 +216,11 @@ def graph_from_file(filename):
 
 #On commence par implémenter une fonction auxiliaire, qui lit un fichier de type 'routes.x.in' (tableau d'entiers) et renvoie ce tableau comme une liste de listes (une liste d'entiers par ligne)
 def lecture(filename): 
-    f = open("/home/onyxia/work/ensae-prog23/input/"+filename, "r") #On rajoute le début du chemin pour que le programme trouve le chemin du fichier 
+    f = open("/home/onyxia/work/ensae-prog23-2/input/"+filename, "r") #On rajoute le début du chemin pour que le programme trouve le chemin du fichier 
     L = f.readlines()#On transforme le tableau en une liste de chaîne de caractères, avec une chaîne = une ligne 
     lignes=[] 
     for i in range(1,len(L)): 
-        lignes.append(L[i].split()) #"lignes" est une liste, donc les éléments (qui représentent les lignes de notre tableau) sont des listes de chaînes de caractères 
+        lignes.append(list(map(int,L[i].split()))) #"lignes" est une liste, donc les éléments (qui représentent les lignes de notre tableau) sont des listes de chaînes de caractères 
     return lignes 
 
 #On arrive à la fonction en elle-même, qui prend en entrée un fichier (de types 'routes.x.in') et un graphe 'g' (qu'on doit prendre comme le graphe associé à l'ensemble des routes du fichier 'routes.x.in' choisi).
@@ -232,7 +232,7 @@ def Temps(g, filename):
     lignes = lecture(filename) #On utilise la fonction auxiliaire pour obtenir une liste de listes d'entiers.
     for i in range(20): #On prend les 20 premiers trajets
         l=lignes[i]     #'l' est la i-ème ligne correspondant au i-ème trajet du tableau.
-        src = int(l[0]) ; dest=int(l[1]) #Dans cette ligne, le premier entier correspond au noeud de départ, et le deuxième au noeud d'arrivée.
+        src = l[0] ; dest=l[1] #Dans cette ligne, le premier entier correspond au noeud de départ, et le deuxième au noeud d'arrivée.
         t1_start = perf_counter()
         g.min_power(src, dest)
         t1_stop = perf_counter()
@@ -276,3 +276,16 @@ def kruskal(graphe): #Trions la liste des arêtes.
                 nouvgraphe.add_edge(arete[0],arete[1],l[j])
 
     return (nouvgraphe)
+
+#J'écris une fonction pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
+def tri_des_camions(filename):
+    L_reverse=[]
+    lignes = lecture(filename)
+    max=lignes[-1][1]
+    for l in reversed(lignes):
+        valeur = l[1]
+        if valeur<=max :
+            max=valeur
+            L_reverse.append(l)
+    return list(reversed(L_reverse))
+#Complexité en O(n)

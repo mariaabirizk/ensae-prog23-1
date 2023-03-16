@@ -1,16 +1,4 @@
-from graph import Graph, graph_from_file, Temps
+from graph import tri_des_camions
 
-data_path = "input/" 
-file_name = "network.2.in" 
+print(tri_des_camions("trucks.2.in.txt")) 
 
-
-g=graph_from_file(data_path+file_name)
-
-
-
-
-
-print(Temps(g, "routes.2.in")) 
-#g=Graph([]) 
-#g.add_edge("Paris","Palaiseau",4,20) 
-#print(g) 
