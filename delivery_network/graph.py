@@ -259,38 +259,26 @@ def union(x,y,parent):
     parent[find(x)]=find(y)
 
 
-'''def kruskal(graphe): #Trions la liste des arêtes.
-    #1-Doit retourner un élément de type 'Graph' de même nombre de noeuds que 'graphe'.
-    nouvgraphe=Graph()
+def trifusion(L):
+    n=len(L)
+    if n<=1:
+        retrun L
+    else : 
+        return fusion(trifusion(L[0, n//2]),trifusion(L[n//2,n]))
 
-    #2- Trions les arêtes de "graphe" par ordre croissant.
-
-    d={} # Je veux stocker dans 'd' les arêtes et la puissance associée à chacune.
-    l=[] #Je veux stocker dans 'l' les puissances.
-    for i in range (0,len(graphe.graph())):
-        for voisin in graphe.graph[i]: #cad je regarde pour le noeud 'i' ses voisins.
-            if (i,voisin[0]) or (voisin[0],i) not in d:
-                d[voisin[1]].append(i,voisin[0])
-                l.append(voisin[1])
-    #On obtient ainsi 'd' un dictionnaire dont les clés sont les puissances des arêtes et les valeurs sont les arêtes.
-    l.sort()
-    #A présent pour accéder aux arêtes de puissance dans 'l', on n'a qu'à faire 'd[la puissance en question]'.
-
-    #3-Construisons 'nouvgraphe'
-    for j in range (0,len(l)): #pour une puissance 'j' 
-        for arete in d[l[j]]: #'d[l[j]]' peut contenir plusieurs arêtes.
-
-            #Dans 'if' on met une condition pour ne pas former de cycle en ajoutant cette nouvelle arête.
-            # Si les deux extrémités des arêtes ont été visitées plus que 2 fois on risque d'obtenir un cycle si on la rajoute une 3e.
-            if nouvgraphe.get_path_with_power(arete[0], arete[1], l[-1]) is not None:
-                nouvgraphe.add_edge(arete[0],arete[1],l[j])
-
-    return (nouvgraphe)'''
+def fusion(L,M):
+    if L==[]:
+        return M
+    if M==[]:
+        return L
+    if L[0]<=M[0]:
+        return [L[0]]+fusion(L[1,len(L)],M)
+    return [M[0]]+fusion(M[1,len(M)],L)
 
 def kruskal(graphe):
     E=Graph([])
     parent=[[]*graphe.nb_nodes]
-    #Tri de E par rapport au poids à ajouter
+    trifusion() #Savoir à qui on affecte le tri !!
     for u in E.graph:
         for V in E.graph[node]:
             v=V[0] ; power=V[1]
@@ -345,8 +333,3 @@ def function(fichier_trucks,fichier_routes,fichier_network): #on lui donne les f
                             liste.delete(liste[i])
                     #notre liste a present contient les puiss et cout tq puiss >= pmin et triee par odre croissant de cout
                     cout_minimal=liste[0][1]
-
-def alancienne(filemame):
-    U=beaucoup
-    trucks=tricamion(filename)
-    while cout
