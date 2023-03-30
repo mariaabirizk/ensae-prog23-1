@@ -259,31 +259,42 @@ def union(x,y,parent):
     parent[find(x)]=find(y)
 
 
-def trifusion(L):
+def trifusiontriplet(L):
     n=len(L)
     if n<=1:
         return L
     else : 
-        return fusion(trifusion(L[0, n//2]),trifusion(L[n//2,n]))
+        return fusiontriplet(trifusiontriplet(L[0, n//2]),trifusiontriplet(L[n//2,n]))
 
-def fusion(L,M):
+def fusiontriplet(L,M):
     if L==[]:
         return M
     if M==[]:
         return L
-    if L[0]<=M[0]:
-        return [L[0]]+fusion(L[1,len(L)],M)
-    return [M[0]]+fusion(M[1,len(M)],L)
+    if L[0][2]<=M[0][2]:
+        return [L[0]]+fusiontriplet(L[1,len(L)],M)
+    return [M[0]]+fusiontriplet(M[1,len(M)],L)
 
 def kruskal(graphe):
-    E=Graph([])
-    parent=[[]*graphe.nb_nodes]
-    trifusion() #Savoir à qui on affecte le tri !!
+    E=Graph([])#Graphe qu'on va vouloir renvoyer
+    Liste=[] #Liste dans laquelle on va stocker des triplets (noeud1,noeud2,puissance) --> C'est la liste qu'on triera
     for u in E.graph:
         for V in E.graph[u]:
-            v=V[0] ; power=V[1]
+            v=V[0]
+            if u<v:
+                t=(u,v,V[1])
+            else : 
+                t=(v,u,V[1])
+            if t not in Liste:
+                Liste.append(t)
+    parent=[[]*graphe.nb_nodes]
+    L=trifusiontriplet(Liste) #Savoir à qui on affecte le tri !!
+    for U in L:
+        u=U[0]
+        for V in E.graph[u]:
+            v=V[0] ; power=V[1] ; dist=V[2]
             if find(u,parent)!=find(v,parent):
-                E.add_edge(u,v,power)
+                E.add_edge(u,v,power,dist)
                 union(u,v,parent)
     return E
 
