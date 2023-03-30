@@ -250,7 +250,7 @@ def Temps(g, filename):
 #Question 12
 
 def find(x,parent):
-    if parent[i]=[]:
+    if parent[i]==[]:
         return i
     parent[i]=Find(parent[i])
     return parent[i]
@@ -262,7 +262,7 @@ def union(x,y,parent):
 def trifusion(L):
     n=len(L)
     if n<=1:
-        retrun L
+        return L
     else : 
         return fusion(trifusion(L[0, n//2]),trifusion(L[n//2,n]))
 
@@ -280,7 +280,7 @@ def kruskal(graphe):
     parent=[[]*graphe.nb_nodes]
     trifusion() #Savoir à qui on affecte le tri !!
     for u in E.graph:
-        for V in E.graph[node]:
+        for V in E.graph[u]:
             v=V[0] ; power=V[1]
             if find(u,parent)!=find(v,parent):
                 E.add_edge(u,v,power)
