@@ -247,9 +247,19 @@ def Temps(g, filename):
     #Renvoie le temps moyen d'exécution de 'min_power' pour un seul trajet.
     return Tmoy*(len(lignes)) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
 
-#Question 12 (Non terminée)
-#Pour le compte-rendu, cette fonction 'kruskal' n'est pas notre version finale : on n'a pas encore obtenu les résultats attendus.
-def kruskal(graphe): #Trions la liste des arêtes.
+#Question 12
+
+def find(x):
+    if parent[i]=[]:
+        return i
+    parent[i]=Find(parent[i])
+    return parent[i]
+
+def union(x,y):
+    parent[find(x)]=find(y)
+
+
+'''def kruskal(graphe): #Trions la liste des arêtes.
     #1-Doit retourner un élément de type 'Graph' de même nombre de noeuds que 'graphe'.
     nouvgraphe=Graph()
 
@@ -275,7 +285,18 @@ def kruskal(graphe): #Trions la liste des arêtes.
             if nouvgraphe.get_path_with_power(arete[0], arete[1], l[-1]) is not None:
                 nouvgraphe.add_edge(arete[0],arete[1],l[j])
 
-    return (nouvgraphe)
+    return (nouvgraphe)'''
+
+def kruskal(graphe):
+    E=[]
+    parent=[[]*graphe.nb_nodes]
+    Tri de E par rapport au poids
+    for (u,v) in E:
+        if find(u)!=find(v):
+            E.graphe.add_edge()
+            union(u,v)
+    return E
+
 
 #J'écris une fonction pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
 def tri_des_camions(filename):
@@ -289,3 +310,41 @@ def tri_des_camions(filename):
             L_reverse.append(l)
     return list(reversed(L_reverse))
 #Complexité en O(n)
+
+def function(fichier_trucks,fichier_routes,fichier_network): #on lui donne les fichiers: routes (trajet,utilite), trucks (p,c) 
+    b= 25*(10**9) #contrainte budg
+    depenses=0
+    utilite = 0
+    trucks=tri_des_camions(fichier_trucks)
+    while depenses <= b :
+        #  je veux acceder aux lignes du fichier_routes, chaque ligne i>=1 represente le trajet i et son utilite i 
+        g=graph_from_file("input/"+fichier_routes)  #il faudra peut etre deplacer la fct
+        d=g.graph
+        #d.items() me donne une liste tq l'element k contient (clek,valeurk)
+    
+        gg= graph_from_file("input/"+fichier_network)
+        # g sera un graphe tq: cles i -> [(ville j , u i->j),(ville k , u i->k),.......]
+        
+        for i in range (0,len(d.items())):    #on parcourt tous les noeuds et donc toutes les villes qui sont le depart d'un trajet dans le fichier routes
+            for ville_i, valeur in d.items[i]:
+                for j in range (0, len(valeur)):
+                    ville_j= valeur[j][0] #rep la ville arrivee du trajet
+                    utilite_ij= valeur[j][1] #rep l'utilite de ce trajet
+                    trajet_ij = (ville_i,ville_j,utilite_ij) 
+                    pmin= gg.min_power(ville_i,ville_j)
+                    # a present on travail dans le fichier trucks
+                    dd=dict_from_file_trucks(fichier_trucks)
+                    liste= dd.items() #dd.items() va etre une liste tq chaque element represente: [p,c]
+                    #trions la liste dd.items suivant le cout mais j pense faut revoir car pb avec liste de liste
+                    liste.sort(key=lambda x: x[1]) # on aura liste de (p,c) trier par cout croissant
+
+                    for i in range (0,len(liste)):
+                        if liste[i][0]< pmin: # liste[i][0] est puissance donnee dans le fichier truck 
+                            liste.delete(liste[i])
+                    #notre liste a present contient les puiss et cout tq puiss >= pmin et triee par odre croissant de cout
+                    cout_minimal=liste[0][1]
+
+def alancienne(filemame):
+    U=beaucoup
+    trucks=tricamion(filename)
+    while cout
