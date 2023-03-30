@@ -275,6 +275,7 @@ def fusiontriplet(L,M):
         return [L[0]]+fusiontriplet(L[1,len(L)],M)
     return [M[0]]+fusiontriplet(M[1,len(M)],L)
 
+#En faire une méthode !!
 def kruskal(graphe):
     E=Graph([])#Graphe qu'on va vouloir renvoyer
     Liste=[] #Liste dans laquelle on va stocker des triplets (noeud1,noeud2,puissance) --> C'est la liste qu'on triera
@@ -298,6 +299,10 @@ def kruskal(graphe):
                 union(u,v,parent)
     return E
 
+#idem !!
+def new_power_min(graphe,u,v):
+    A=kruskal(graphe)
+    #Méthode révoltionnaire à appliquer à un arbre
 
 #J'écris une fonction pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
 def tri_des_camions(filename):
