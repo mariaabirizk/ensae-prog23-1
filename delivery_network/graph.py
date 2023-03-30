@@ -249,13 +249,13 @@ def Temps(g, filename):
 
 #Question 12
 
-def find(x):
+def find(x,parent):
     if parent[i]=[]:
         return i
     parent[i]=Find(parent[i])
     return parent[i]
 
-def union(x,y):
+def union(x,y,parent):
     parent[find(x)]=find(y)
 
 
@@ -288,13 +288,15 @@ def union(x,y):
     return (nouvgraphe)'''
 
 def kruskal(graphe):
-    E=[]
+    E=Graph([])
     parent=[[]*graphe.nb_nodes]
-    Tri de E par rapport au poids
-    for (u,v) in E:
-        if find(u)!=find(v):
-            E.graphe.add_edge()
-            union(u,v)
+    #Tri de E par rapport au poids à ajouter
+    for u in E.graph:
+        for V in E.graph[node]:
+            v=V[0] ; power=V[1]
+            if find(u,parent)!=find(v,parent):
+                E.add_edge(u,v,power)
+                union(u,v,parent)
     return E
 
 
