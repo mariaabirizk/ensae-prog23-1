@@ -189,6 +189,57 @@ class Graph:
         chemin= self.get_path_with_power(src, dest, puiss_max) # A la dernière itération, 'puiss' est modifiée et on rentrera dans le cas else donc on ne peut pas mettre puiss
         return (chemin, puiss_max)
 
+    def find(self,x,parent):
+        if parent[i]==[]:
+            return i
+        parent[i]=find(self,parent[i])
+        return parent[i]
+
+    def union(self,x,y,parent):
+        parent[find(self,x)]=find(self,y)
+
+    def trifusiontriplet(self,L):
+        n=len(L)
+        if n<=1:
+            return L
+        else : 
+            return fusiontriplet(self,trifusiontriplet(self,L[0, n//2]),trifusiontriplet(self,L[n//2,n]))
+
+    def fusiontriplet(self,L,M):
+        if L==[]:
+            return M
+        if M==[]:
+            return L
+        if L[0][2]<=M[0][2]:
+            return [L[0]]+fusiontriplet(self,L[1,len(L)],M)
+        return [M[0]]+fusiontriplet(self,M[1,len(M)],L)
+
+    def kruskal(self):
+        E=Graph([])#Graphe qu'on va vouloir renvoyer
+        Liste=[] #Liste dans laquelle on va stocker des triplets (noeud1,noeud2,puissance) --> C'est la liste qu'on triera
+        for u in self.graph:
+            for V in self.graph[u]:
+                v=V[0]
+                if u<v:
+                    t=(u,v,V[1])
+                else : 
+                    t=(v,u,V[1])
+                if t not in Liste:
+                    Liste.append(t)
+        parent=[[]*self.nb_nodes]
+        L=trifusiontriplet(Liste) #Savoir à qui on affecte le tri !!
+        for U in L:
+            u=U[0]
+            for V in self.graph[u]:
+                v=V[0] ; power=V[1] ; dist=V[2]
+                if find(u,parent)!=find(v,parent):
+                    E.add_edge(u,v,power,dist)
+                    union(u,v,parent)
+        return E
+
+    def new_power_min(graphe,u,v):
+        A=kruskal(graphe)
+        
 #Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers 'network' proposés dans le dossier 'input'.
 def graph_from_file(filename): 
     f = open("/home/onyxia/work/ensae-prog23/"+filename, "r") #On rajoute le début du chemin pour que le programme trouve le chemin du fichier 
@@ -246,63 +297,6 @@ def Temps(g, filename):
     Tmoy= S/len(L)
     #Renvoie le temps moyen d'exécution de 'min_power' pour un seul trajet.
     return Tmoy*(len(lignes)) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
-
-#Question 12
-
-def find(x,parent):
-    if parent[i]==[]:
-        return i
-    parent[i]=Find(parent[i])
-    return parent[i]
-
-def union(x,y,parent):
-    parent[find(x)]=find(y)
-
-
-def trifusiontriplet(L):
-    n=len(L)
-    if n<=1:
-        return L
-    else : 
-        return fusiontriplet(trifusiontriplet(L[0, n//2]),trifusiontriplet(L[n//2,n]))
-
-def fusiontriplet(L,M):
-    if L==[]:
-        return M
-    if M==[]:
-        return L
-    if L[0][2]<=M[0][2]:
-        return [L[0]]+fusiontriplet(L[1,len(L)],M)
-    return [M[0]]+fusiontriplet(M[1,len(M)],L)
-
-#En faire une méthode !!
-def kruskal(graphe):
-    E=Graph([])#Graphe qu'on va vouloir renvoyer
-    Liste=[] #Liste dans laquelle on va stocker des triplets (noeud1,noeud2,puissance) --> C'est la liste qu'on triera
-    for u in E.graph:
-        for V in E.graph[u]:
-            v=V[0]
-            if u<v:
-                t=(u,v,V[1])
-            else : 
-                t=(v,u,V[1])
-            if t not in Liste:
-                Liste.append(t)
-    parent=[[]*graphe.nb_nodes]
-    L=trifusiontriplet(Liste) #Savoir à qui on affecte le tri !!
-    for U in L:
-        u=U[0]
-        for V in E.graph[u]:
-            v=V[0] ; power=V[1] ; dist=V[2]
-            if find(u,parent)!=find(v,parent):
-                E.add_edge(u,v,power,dist)
-                union(u,v,parent)
-    return E
-
-#idem !!
-def new_power_min(graphe,u,v):
-    A=kruskal(graphe)
-    #Méthode révoltionnaire à appliquer à un arbre
 
 #J'écris une fonction pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
 def tri_des_camions(filename):
