@@ -298,7 +298,7 @@ def Temps(g, filename):
     #Renvoie le temps moyen d'exécution de 'min_power' pour un seul trajet.
     return Tmoy*(len(lignes)) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
 
-#J'écris une fonction pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
+'''#J'écris une fonction pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
 def tri_des_camions(filename):
     L_reverse=[]
     lignes = lecture(filename)
@@ -342,4 +342,56 @@ def function(fichier_trucks,fichier_routes,fichier_network): #on lui donne les f
                         if liste[i][0]< pmin: # liste[i][0] est puissance donnee dans le fichier truck 
                             liste.delete(liste[i])
                     #notre liste a present contient les puiss et cout tq puiss >= pmin et triee par odre croissant de cout
-                    cout_minimal=liste[0][1]
+                    cout_minimal=liste[0][1]'''
+
+#Question 18
+def function_profit(fichier_trucks,fichier_routes,fichier_network): #methode2 rapide
+    # je veux acceder aux lignes du fichier_routes, chaque ligne i>=1 represente le trajet i=(ville1,ville2) et son utilite i 
+    lr=liste_from_file("input/"+ fichier_routes)        
+    lr.sort(key=lambda x: x[1]) #lr sera triee par ordre croissant d'utilite 
+            
+    g= graph_from_file("input/"+fichier_network)
+
+    #pour le fichier trucks
+    lt=liste_from_file("input/"+fichier_trucks) # [(p1,c1) , (p2,c2), ........]
+    lt.sort(key=lambda x: x[1])
+
+
+    b= 25*(10**9) #contrainte budg
+    depenses=0
+    umax= 0
+    c=0
+    resultat=[]
+    while depenses <= b :
+        for i in range (0,len(lr)): 
+            l=len(lr)
+            while depenses <= b:
+                umax=umax+lr[l-i][1]   #l-i car on veux sommer les utilites en partant des plus grandes utilites 
+                pmin=g.min_power(lr[l-i][0]) #min_power sur le trajet associe a l'utilite prise 
+
+                a=False
+                while a==False:
+                    for j in range (0,len(lt)):
+                        if lt[j][0]>= pmin:
+                            puiss=lt[j][0]
+                            c= lt[j][1] 
+                            break #revoir l'ecriture, j'ai ajoute break parceque je pense qu'il va faire toutes les iterations dans lt sinon
+                    a=True
+                resultat.append(((puiss,c),lr[l-i][0])) #revoir si qd ils disent return le camion et affection sur le trajet ils veulent (p,c) du camion et pas numero de la ligne associee a ce couple
+                depenses=depenses+c
+
+    return (umax,resultat)
+
+def liste_from_file(filename):
+    f = open("/home/onyxia/work/ensae-prog23/"+filename, "r") 
+    L = f.readlines()
+    lignes=[] 
+    liste=[]
+    for i in range(1,len(L)): 
+        lignes.append(L[i].split())  
+    for line in lignes: 
+        if len(line)==2: #je l'utilise pour le fichier trucks
+            liste.append(int(line[0]) ,int(line[1])) # (p,c)
+        if len(line)==3: #je l'utilise pour le fichier routes
+            liste.append((int(line[0]),int(line[1])),int(line[3])) #pour les fichiers trucks on aura ((villea,villeb), uab)
+    return liste
