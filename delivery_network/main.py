@@ -1,9 +1,15 @@
 from graph import Graph
 
 t=Graph([])
-t.add_edge(1,2,1,1)
-t.add_edge(1,5,1,1)
-t.add_edge(2,4,1,1)
-t.add_edge(2,3,1,1)
-"print([t.kruskal().graph[1][i[0]] for i in t.kruskal().graph[1]])"
-print([i[0] for i in t.kruskal().graph[1]])
+t.add_edge(1,2,7,1)
+t.add_edge(1,4,5,1)
+t.add_edge(2,4,9,1)
+t.add_edge(2,3,8,1)
+t.add_edge(3,5,5,1)
+t.add_edge(5,7,9,1)
+t.add_edge(7,6,11,1)
+t.add_edge(5,6,8,1)
+t.add_edge(2,5,7,1)
+t.add_edge(4,5,15,1)
+t.add_edge(4,6,6,1)
+print(t.kruskal())

@@ -222,20 +222,18 @@ class Graph:
             for V in self.graph[u]:
                 v=V[0]
                 if u<v:
-                    t=(u,v,V[1])
+                    t=(u,v,V[1],V[2])
                 else : 
-                    t=(v,u,V[1])
+                    t=(v,u,V[1],V[2])
                 if t not in Liste:
                     Liste.append(t)
         parent=[[] for i in range (self.nb_nodes)]
         L=self.trifusiontriplet(Liste) #Savoir à qui on affecte le tri !!
         for U in L:
-            u=U[0]
-            for V in self.graph[u]:
-                v=V[0] ; power=V[1] ; dist=V[2]
-                if self.find(u,parent)!=self.find(v,parent):
-                    E.add_edge(u,v,power,dist)
-                    self.union(u,v,parent)
+            u=U[0] ; v=U[1] ; power=U[2] ; dist=U[3]
+            if self.find(u,parent)!=self.find(v,parent):
+                E.add_edge(u,v,power,dist)
+                self.union(u,v,parent)
         return E
 
     def new_power_min(graphe,u,v):

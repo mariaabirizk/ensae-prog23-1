@@ -20,6 +20,21 @@ class Test_GraphLoading(unittest.TestCase):
         self.assertEqual({frozenset([i[0] for i in t.kruskal().graph[5]])} ,{frozenset([1])})
 
     #Test de l'algorithme de Kruskal sur l'exemple donné sur la page Wikipedia française de l'algorithme
-    
+    def test_Wikipedia(self): 
+        t=Graph([])
+        t.add_edge(1,2,7,1)
+        t.add_edge(1,4,5,1)
+        t.add_edge(2,4,9,1)
+        t.add_edge(2,3,8,1)
+        t.add_edge(3,5,5,1)
+        t.add_edge(5,7,9,1)
+        t.add_edge(7,6,11,1)
+        t.add_edge(5,6,8,1)
+        t.add_edge(2,5,7,1)
+        t.add_edge(4,5,15,1)
+        t.add_edge(4,6,6,1)
+        self.assertEqual({frozenset([i[0] for i in t.kruskal().graph[1]])} ,{frozenset([2,4])})
+        self.assertEqual({frozenset([i[0] for i in t.kruskal().graph[6]])} ,{frozenset([4])})
+        self.assertEqual({frozenset([i[0] for i in t.kruskal().graph[5]])} ,{frozenset([3,7,2])})
 if __name__ == '__main__':
     unittest.main()
