@@ -1,0 +1,25 @@
+import sys 
+sys.path.append("delivery_network/")
+
+import unittest 
+from graph import Graph, graph_from_file
+
+
+
+
+class Test_GraphLoading(unittest.TestCase):
+    #Test de l'algorithme de Kruskal dans le cas où le graphe est déjà un arbre
+    def test_arbre_devient_arbre(self): 
+        t=Graph([])
+        t.add_edge(1,2,1,1)
+        t.add_edge(1,5,1,1)
+        t.add_edge(2,4,1,1)
+        t.add_edge(2,3,1,1)
+        self.assertEqual({frozenset([i[0] for i in t.kruskal().graph[1]])} ,{frozenset([2,5])})
+        self.assertEqual({frozenset([i[0] for i in t.kruskal().graph[2]])} ,{frozenset([1,3,4])})
+        self.assertEqual({frozenset([i[0] for i in t.kruskal().graph[5]])} ,{frozenset([1])})
+
+    #Test de l'algorithme de Kruskal sur l'exemple donné sur la page Wikipedia française de l'algorithme
+    
+if __name__ == '__main__':
+    unittest.main()

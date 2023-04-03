@@ -189,21 +189,22 @@ class Graph:
         chemin= self.get_path_with_power(src, dest, puiss_max) # A la dernière itération, 'puiss' est modifiée et on rentrera dans le cas else donc on ne peut pas mettre puiss
         return (chemin, puiss_max)
 
-    def find(self,x,parent):
-        if parent[i]==[]:
+    #Question 12
+    def find(self,i,parent):
+        if parent[i-1]==[]:
             return i
-        parent[i]=find(self,parent[i])
-        return parent[i]
+        parent[i-1]=self.find(parent[i-1],parent)
+        return parent[i-1]
 
     def union(self,x,y,parent):
-        parent[find(self,x)]=find(self,y)
+        parent[self.find(x,parent)-1]=self.find(y,parent)
 
     def trifusiontriplet(self,L):
         n=len(L)
         if n<=1:
             return L
         else : 
-            return fusiontriplet(self,trifusiontriplet(self,L[0, n//2]),trifusiontriplet(self,L[n//2,n]))
+            return self.fusiontriplet(self.trifusiontriplet(L[0 : n//2]),self.trifusiontriplet(L[n//2 : n]))
 
     def fusiontriplet(self,L,M):
         if L==[]:
@@ -211,8 +212,8 @@ class Graph:
         if M==[]:
             return L
         if L[0][2]<=M[0][2]:
-            return [L[0]]+fusiontriplet(self,L[1,len(L)],M)
-        return [M[0]]+fusiontriplet(self,M[1,len(M)],L)
+            return [L[0]]+self.fusiontriplet(L[1 :len(L)],M)
+        return [M[0]]+self.fusiontriplet(M[1 :len(M)],L)
 
     def kruskal(self):
         E=Graph([])#Graphe qu'on va vouloir renvoyer
@@ -226,15 +227,15 @@ class Graph:
                     t=(v,u,V[1])
                 if t not in Liste:
                     Liste.append(t)
-        parent=[[]*self.nb_nodes]
-        L=trifusiontriplet(Liste) #Savoir à qui on affecte le tri !!
+        parent=[[] for i in range (self.nb_nodes)]
+        L=self.trifusiontriplet(Liste) #Savoir à qui on affecte le tri !!
         for U in L:
             u=U[0]
             for V in self.graph[u]:
                 v=V[0] ; power=V[1] ; dist=V[2]
-                if find(u,parent)!=find(v,parent):
+                if self.find(u,parent)!=self.find(v,parent):
                     E.add_edge(u,v,power,dist)
-                    union(u,v,parent)
+                    self.union(u,v,parent)
         return E
 
     def new_power_min(graphe,u,v):
