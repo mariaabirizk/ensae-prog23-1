@@ -118,7 +118,7 @@ class Graph:
             trajet=[src]    #On initialise le trajet pour qu'il commence toujours par 'src'.
             return self.explorer1(src,dest,visite,power,trajet) #On utilise la fonction auxiliaire définie ci-dessus.
         
-        else : #On se place dans le cas où 'src' et 'dest' ne sont pas dans la même composante connxe, c'est-à-dire qu'il n'existe même pas de chemin les reliant (indépendamment de la puissance).
+        else : #On se place dans le cas où 'src' et 'dest' ne sont pas dans la même composante connexe, c'est-à-dire qu'il n'existe même pas de chemin les reliant (indépendamment de la puissance).
             return None
      
 
@@ -190,6 +190,7 @@ class Graph:
         return (chemin, puiss_max)
 
     #Question 12
+    #On utilise des programmes auxiliaires qui permettent la méthode "Union-find" pour construire un arbre, comme proposé par l'énoncé.
     def find(self,i,parent):
         if parent[i-1]==[]:
             return i
@@ -199,43 +200,46 @@ class Graph:
     def union(self,x,y,parent):
         parent[self.find(x,parent)-1]=self.find(y,parent)
 
-    def trifusiontriplet(self,L):
+    #On utilise ensuite deux nouveaux programmes auxiliaires qui vont nous permettre de trier les arêtes selon leurs puissances, en utilisant la méthode du "tri fusion".
+    def trifusionquadruplet(self,L):
         n=len(L)
         if n<=1:
             return L
         else : 
-            return self.fusiontriplet(self.trifusiontriplet(L[0 : n//2]),self.trifusiontriplet(L[n//2 : n]))
+            return self.fusionquadruplet(self.trifusionquadruplet(L[0 : n//2]),self.trifusionquadruplet(L[n//2 : n]))
 
-    def fusiontriplet(self,L,M):
+    def fusionquadruplet(self,L,M):
         if L==[]:
             return M
         if M==[]:
             return L
         if L[0][2]<=M[0][2]:
-            return [L[0]]+self.fusiontriplet(L[1 :len(L)],M)
-        return [M[0]]+self.fusiontriplet(M[1 :len(M)],L)
+            return [L[0]]+self.fusionquadruplet(L[1 :len(L)],M)
+        return [M[0]]+self.fusionquadruplet(M[1 :len(M)],L)
 
+    #On développe enfin la fonctio, qui renvoie l'arbre couvrant de poids minimal du graphe
     def kruskal(self):
-        E=Graph([])#Graphe qu'on va vouloir renvoyer
-        Liste=[] #Liste dans laquelle on va stocker des triplets (noeud1,noeud2,puissance) --> C'est la liste qu'on triera
+        E=Graph([])#Graphe (arbre) qu'on va vouloir renvoyer
+        Liste=[] #Liste dans laquelle on va stocker des quadruplets (noeud1,noeud2,puissance,dist) --> C'est la liste qu'on triera
         for u in self.graph:
             for V in self.graph[u]:
                 v=V[0]
                 if u<v:
                     t=(u,v,V[1],V[2])
                 else : 
-                    t=(v,u,V[1],V[2])
+                    t=(v,u,V[1],V[2]) #On prend cette précaution afin de ne pas placer deux fois les mêmes arêts dans la liste
                 if t not in Liste:
                     Liste.append(t)
-        parent=[[] for i in range (self.nb_nodes)]
-        L=self.trifusiontriplet(Liste) #Savoir à qui on affecte le tri !!
-        for U in L:
+        parent=[[] for i in range (self.nb_nodes)] #Liste des parents qui sera utile pour la méthode Union-find
+        L=self.trifusionquadruplet(Liste) #On trie les arêtes par puissance croissante
+        for U in L: 
             u=U[0] ; v=U[1] ; power=U[2] ; dist=U[3]
-            if self.find(u,parent)!=self.find(v,parent):
-                E.add_edge(u,v,power,dist)
-                self.union(u,v,parent)
+            if self.find(u,parent)!=self.find(v,parent): #On s'assure que u et v ne sont pas déjà reliés, sinon on formerait des cycles (et on n'obtiendrait donc pas d'arbre).
+                E.add_edge(u,v,power,dist) 
+                self.union(u,v,parent) #On signale que u et v sont désormais reliés
         return E
 
+    #Question 14
     def new_power_min(graphe,u,v):
         A=kruskal(graphe)
         
@@ -297,10 +301,9 @@ def Temps(g, filename):
     #Renvoie le temps moyen d'exécution de 'min_power' pour un seul trajet.
     return Tmoy*(len(lignes)) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
 
-'''#J'écris une fonction pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
-def tri_des_camions(filename):
+#J'écris une fonction pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
+def tri_des_camions(lignes):
     L_reverse=[]
-    lignes = lecture(filename)
     max=lignes[-1][1]
     for l in reversed(lignes):
         valeur = l[1]
@@ -310,7 +313,7 @@ def tri_des_camions(filename):
     return list(reversed(L_reverse))
 #Complexité en O(n)
 
-def function(fichier_trucks,fichier_routes,fichier_network): #on lui donne les fichiers: routes (trajet,utilite), trucks (p,c) 
+'''def function(fichier_trucks,fichier_routes,fichier_network): #on lui donne les fichiers: routes (trajet,utilite), trucks (p,c) 
     b= 25*(10**9) #contrainte budg
     depenses=0
     utilite = 0
@@ -352,9 +355,7 @@ def function_profit(fichier_trucks,fichier_routes,fichier_network): #methode2 ra
     g= graph_from_file("input/"+fichier_network)
 
     #pour le fichier trucks
-    lt=liste_from_file("input/"+fichier_trucks) # [(p1,c1) , (p2,c2), ........]
-    lt.sort(key=lambda x: x[1])
-
+    lt=tri_des_camions(liste_from_file("input/"+fichier_trucks)) # [(p1,c1) , (p2,c2), ........]
 
     b= 25*(10**9) #contrainte budg
     depenses=0
