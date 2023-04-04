@@ -301,7 +301,10 @@ def Temps(g, filename):
     #Renvoie le temps moyen d'exécution de 'min_power' pour un seul trajet.
     return Tmoy*(len(lignes)) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
 
-#J'écris une fonction pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
+#Question 18
+
+#Fonction auxiliaire pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
+#Elle présuppose que les camions sont rangés par puissance croissante
 def tri_des_camions(lignes):
     L_reverse=[]
     max=lignes[-1][1]
@@ -313,62 +316,25 @@ def tri_des_camions(lignes):
     return list(reversed(L_reverse))
 #Complexité en O(n)
 
-'''def function(fichier_trucks,fichier_routes,fichier_network): #on lui donne les fichiers: routes (trajet,utilite), trucks (p,c) 
-    b= 25*(10**9) #contrainte budg
-    depenses=0
-    utilite = 0
-    trucks=tri_des_camions(fichier_trucks)
-    while depenses <= b :
-        #  je veux acceder aux lignes du fichier_routes, chaque ligne i>=1 represente le trajet i et son utilite i 
-        g=graph_from_file("input/"+fichier_routes)  #il faudra peut etre deplacer la fct
-        d=g.graph
-        #d.items() me donne une liste tq l'element k contient (clek,valeurk)
-    
-        gg= graph_from_file("input/"+fichier_network)
-        # g sera un graphe tq: cles i -> [(ville j , u i->j),(ville k , u i->k),.......]
-        
-        for i in range (0,len(d.items())):    #on parcourt tous les noeuds et donc toutes les villes qui sont le depart d'un trajet dans le fichier routes
-            for ville_i, valeur in d.items[i]:
-                for j in range (0, len(valeur)):
-                    ville_j= valeur[j][0] #rep la ville arrivee du trajet
-                    utilite_ij= valeur[j][1] #rep l'utilite de ce trajet
-                    trajet_ij = (ville_i,ville_j,utilite_ij) 
-                    pmin= gg.min_power(ville_i,ville_j)
-                    # a present on travail dans le fichier trucks
-                    dd=dict_from_file_trucks(fichier_trucks)
-                    liste= dd.items() #dd.items() va etre une liste tq chaque element represente: [p,c]
-                    #trions la liste dd.items suivant le cout mais j pense faut revoir car pb avec liste de liste
-                    liste.sort(key=lambda x: x[1]) # on aura liste de (p,c) trier par cout croissant
-
-                    for i in range (0,len(liste)):
-                        if liste[i][0]< pmin: # liste[i][0] est puissance donnee dans le fichier truck 
-                            liste.delete(liste[i])
-                    #notre liste a present contient les puiss et cout tq puiss >= pmin et triee par odre croissant de cout
-                    cout_minimal=liste[0][1]'''
-
-#Question 18
-def function_profit(fichier_trucks,fichier_routes,fichier_network): #methode2 rapide
+#Méthode rapide mais non optimale
+def function_profit(fichier_trucks,fichier_routes,fichier_network):
     # je veux acceder aux lignes du fichier_routes, chaque ligne i>=1 represente le trajet i=(ville1,ville2) et son utilite i 
-    lr=liste_from_file("input/"+ fichier_routes)        
-    lr.sort(key=lambda x: x[1]) #lr sera triee par ordre croissant d'utilite 
-            
-    g= graph_from_file("input/"+fichier_network)
+    lr=liste_from_file("input/"+ fichier_routes) #"lr" sera la liste des lignes du fichier route (chaque élément est de la forme [ville 1, ville 2, utilité]) 
+    lr.sort(key=lambda x: x[2]) #On trie "lr" par ordre croissant d'utilité         
+    g= graph_from_file("input/"+fichier_network) #On importe le graphe construit à partir du fichier texte demandé
+    lt=tri_des_camions(liste_from_file("input/"+fichier_trucks)) #On importe la liste des camions triée. Chaque élément est de la forme [puissance, coût]
 
-    #pour le fichier trucks
-    lt=tri_des_camions(liste_from_file("input/"+fichier_trucks)) # [(p1,c1) , (p2,c2), ........]
-
-    b= 25*(10**9) #contrainte budg
-    depenses=0
-    umax= 0
-    c=0
+    b= 25*(10**9) #Contrainte budgétaire
+    depenses=0 #Compteur de nos dépenses
+    umax= 0 #Compteur de notre utilité
+    c=0 
     resultat=[]
-    while depenses <= b :
-        for i in range (0,len(lr)): 
+    while depenses <= b : #Tant que la contrainte budgétaire est respectée
+        for i in range (0,len(lr)): #On parcourt toutes les routes dans l'ordre
             l=len(lr)
-            while depenses <= b:
-                umax=umax+lr[l-i][1]   #l-i car on veux sommer les utilites en partant des plus grandes utilites 
-                pmin=g.min_power(lr[l-i][0]) #min_power sur le trajet associe a l'utilite prise 
-
+            while depenses <= b: 
+                umax=umax+lr[l-i-1][1]   #On prend l'indice "l-i-1" car on veut sommer les utilités en partant des plus grandes utilités ("lr" est triée par ordre croissant d'utilité) 
+                pmin=g.min_power(lr[l-i-1][0],lr[l-i-1][1])[1] #On récupère la puissance minimale sur le trajet considéré
                 a=False
                 while a==False:
                     for j in range (0,len(lt)):
@@ -377,7 +343,7 @@ def function_profit(fichier_trucks,fichier_routes,fichier_network): #methode2 ra
                             c= lt[j][1] 
                             break #revoir l'ecriture, j'ai ajoute break parceque je pense qu'il va faire toutes les iterations dans lt sinon
                     a=True
-                resultat.append(((puiss,c),lr[l-i][0])) #revoir si qd ils disent return le camion et affection sur le trajet ils veulent (p,c) du camion et pas numero de la ligne associee a ce couple
+                resultat.append(((puiss,c),lr[l-i-1][0])) #revoir si qd ils disent return le camion et affection sur le trajet ils veulent (p,c) du camion et pas numero de la ligne associee a ce couple
                 depenses=depenses+c
 
     return (umax,resultat)
@@ -390,8 +356,8 @@ def liste_from_file(filename):
     for i in range(1,len(L)): 
         lignes.append(L[i].split())  
     for line in lignes: 
-        if len(line)==2: #je l'utilise pour le fichier trucks
-            liste.append(int(line[0]) ,int(line[1])) # (p,c)
-        if len(line)==3: #je l'utilise pour le fichier routes
-            liste.append((int(line[0]),int(line[1])),int(line[3])) #pour les fichiers trucks on aura ((villea,villeb), uab)
+        if len(line)==2: #Pour le fichier trucks
+            liste.append([int(line[0]) ,int(line[1])]) # Elements de la forme [puissance, coût]
+        if len(line)==3: #Pour le fichier routes
+            liste.append([int(line[0]),int(line[1]),int(line[2])]) #pour les fichiers routes on aura ((villea,villeb), uab)
     return liste
