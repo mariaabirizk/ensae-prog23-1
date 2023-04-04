@@ -240,8 +240,8 @@ class Graph:
         return E
 
     #Question 14
-    def new_power_min(graphe,u,v):
-        A=kruskal(graphe)
+    def new_power_min(self,src,dest):
+        A=self.kruskal()
         
 #Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers 'network' proposés dans le dossier 'input'.
 def graph_from_file(filename): 
@@ -329,23 +329,20 @@ def function_profit(fichier_trucks,fichier_routes,fichier_network):
     umax= 0 #Compteur de notre utilité
     c=0 
     resultat=[]
-    while depenses <= b : #Tant que la contrainte budgétaire est respectée
-        for i in range (0,len(lr)): #On parcourt toutes les routes dans l'ordre
-            l=len(lr)
-            while depenses <= b: 
-                umax=umax+lr[l-i-1][1]   #On prend l'indice "l-i-1" car on veut sommer les utilités en partant des plus grandes utilités ("lr" est triée par ordre croissant d'utilité) 
-                pmin=g.min_power(lr[l-i-1][0],lr[l-i-1][1])[1] #On récupère la puissance minimale sur le trajet considéré
-                a=False
-                while a==False:
-                    for j in range (0,len(lt)):
-                        if lt[j][0]>= pmin:
-                            puiss=lt[j][0]
-                            c= lt[j][1] 
-                            break #revoir l'ecriture, j'ai ajoute break parceque je pense qu'il va faire toutes les iterations dans lt sinon
-                    a=True
-                resultat.append(((puiss,c),lr[l-i-1][0])) #revoir si qd ils disent return le camion et affection sur le trajet ils veulent (p,c) du camion et pas numero de la ligne associee a ce couple
+    for i in range (0,len(lr)): #On parcourt toutes les routes dans l'ordre
+        l=len(lr)
+        pmin=g.min_power(lr[l-i-1][0],lr[l-i-1][1])[1] #On récupère la puissance minimale sur le trajet considéré
+        #On cherche le camion le moins cher qui permet d'effectuer le trajet
+        for j in range (0,len(lt)):
+            if lt[j][0]>= pmin:
+                puiss=lt[j][0]
+                c= lt[j][1]
                 depenses=depenses+c
-
+                break
+        if depenses>b:
+            break
+        resultat.append([(puiss,c),(lr[l-i-1][0],lr[l-i-1][1])])
+        umax+=lr[l-i-1][2]   #On prend l'indice "l-i-1" car on veut sommer les utilités en partant des plus grandes utilités ("lr" est triée par ordre croissant d'utilité) 
     return (umax,resultat)
 
 def liste_from_file(filename):
@@ -359,5 +356,5 @@ def liste_from_file(filename):
         if len(line)==2: #Pour le fichier trucks
             liste.append([int(line[0]) ,int(line[1])]) # Elements de la forme [puissance, coût]
         if len(line)==3: #Pour le fichier routes
-            liste.append([int(line[0]),int(line[1]),int(line[2])]) #pour les fichiers routes on aura ((villea,villeb), uab)
+            liste.append([int(line[0]),int(line[1]),int(line[2])]) #Elements de la forme [ville 1,ville 2, utilité]
     return liste
