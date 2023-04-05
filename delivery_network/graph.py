@@ -273,7 +273,10 @@ class Graph:
     def new_power_min(self,src,dest):
         A=self.kruskal()
         return A.new_get_path_with_power(src, dest)
-        
+    
+    def new_new_power_min(self,src,dest):
+        return self.new_get_path_with_power(src, dest)
+
 #Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers 'network' proposés dans le dossier 'input'.
 def graph_from_file(filename): 
     f = open("/home/onyxia/work/ensae-prog23/"+filename, "r") #On rajoute le début du chemin pour que le programme trouve le chemin du fichier 
@@ -353,6 +356,7 @@ def function_profit(fichier_trucks,fichier_routes,fichier_network):
     lr=liste_from_file("input/"+ fichier_routes) #"lr" sera la liste des lignes du fichier route (chaque élément est de la forme [ville 1, ville 2, utilité]) 
     lr.sort(key=lambda x: x[2]) #On trie "lr" par ordre croissant d'utilité         
     g= graph_from_file("input/"+fichier_network) #On importe le graphe construit à partir du fichier texte demandé
+    A=g.kruskal()
     lt=tri_des_camions(liste_from_file("input/"+fichier_trucks)) #On importe la liste des camions triée. Chaque élément est de la forme [puissance, coût]
 
     b= 25*(10**9) #Contrainte budgétaire
@@ -362,7 +366,7 @@ def function_profit(fichier_trucks,fichier_routes,fichier_network):
     resultat=[]
     for i in range (0,len(lr)): #On parcourt toutes les routes dans l'ordre
         l=len(lr)
-        pmin=g.min_power(lr[l-i-1][0],lr[l-i-1][1])[1] #On récupère la puissance minimale sur le trajet considéré
+        pmin=A.new_new_power_min(lr[l-i-1][0],lr[l-i-1][1])[1] #On récupère la puissance minimale sur le trajet considéré
         #On cherche le camion le moins cher qui permet d'effectuer le trajet
         for j in range (0,len(lt)):
             if lt[j][0]>= pmin:

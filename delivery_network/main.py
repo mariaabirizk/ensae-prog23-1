@@ -12,7 +12,7 @@ t.add_edge(5,6,8,1)
 t.add_edge(2,5,7,1)
 t.add_edge(4,5,15,1)
 t.add_edge(4,6,6,1)
-print(t.new_power_min(6, 5),([6,4,1,2,5],25))
-print()
+'''print(t.new_power_min(6, 5),([6,4,1,2,5],25))
+print()'''
 
-'''print(tri_des_camions(liste_from_file("input/"+"trucks.2.in.txt")))'''
+print(function_profit("trucks.2.in.txt", "routes.2.in", "network.2.in"))
