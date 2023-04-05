@@ -15,4 +15,4 @@ t.add_edge(4,6,6,1)
 '''print(t.new_power_min(6, 5),([6,4,1,2,5],25))
 print()'''
 
-print(function_profit("trucks.2.in.txt", "routes.2.in", "network.2.in"))
+print(function_profit("trucks.1.in.txt", "routes.1.in", "network.1.in"))
