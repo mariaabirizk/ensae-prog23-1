@@ -240,8 +240,39 @@ class Graph:
         return E
 
     #Question 14
+    #On modifie légèrement la fonction "get_path_with_power" et sa fonction auxiliaire, car dans le cas d'un arbre, on sait que le chemin est unique. On ne prend plus de puissance en entrée
+    def explorer3(self,ville,dest,visite,trajet,liste_puissance):
+        if ville==dest: #On se place dans le cas dans lequel on arrive à destination.
+            return (trajet,sum(liste_puissance)) #On renvoie le trajet effectué, qui est un trajet effectif pour reliser 'src' à 'dest'.
+        visite.append(ville) #On déclare 'ville' comme un ville visitée.
+        for voisins in self.graph[ville]: #On parcourt tous les voisins de 'ville'.
+            voisin=voisins[0] #'voisin' désigne le numéro du noeud voisin
+            puissance=voisins[1] #'puissance' désigne la puissance minimale nécessaire pour parcourir l'arête
+            if voisin == dest: #On regarde si la ville voisine est la ville d'arrivée...
+                trajet.append(dest) 
+                liste_puissance.append(puissance)
+                return (trajet,sum(liste_puissance)) #... alors cela signifie qu'on est arrivés au résultat, donc on le renvoie
+
+            else: #On se place dans le cas où la ville qu'on regarde n'est pas la ville d'arrivée, ou qu'elle l'est mais qu'on ne peut pas l'atteindre par le chemin choisi.
+                if voisin not in visite : #On se place dans le cas où le voisin n'est pas visité, et on a assez de puissance pour aller le rejoindre.
+                    trajet.append(voisin)#On peut donc l'ajouter au trajet
+                    liste_puissance.append(puissance)
+                    if self.explorer3(voisin,dest,visite,trajet,liste_puissance) is None: #Si on obtient "None", c'est qu'on a fait toute la boucle avec 'voisin' sans arriver à relier la ville à 'dest'.
+                        trajet.pop( )   #Cela signifie que c'était une mauvaise idée de passer par 'voisin', et on le retire du trajet.
+                        liste_puissance.pop()               #On remarque qu'on ne rebouclera pas à l'infini car désormais 'voisin' est dans 'visiste'.
+                    else:
+                        return (trajet,sum(liste_puissance))
+
+    def new_get_path_with_power(self, src, dest):
+        #Comme 'self.connected_components()' est une partition des noeuds du graphe, il y aura forcément un et un seul 'l' dans 'self.connected_components()' tel que 'W=l'.     #On se place dans le cas où 'src' et 'dest' sont dans la même composante connexe.
+        liste_puissance=[]
+        visite=[]       #On initialise les voisins visités de 'src' à l'ensemble vide.
+        trajet=[src]    #On initialise le trajet pour qu'il commence toujours par 'src'.
+        return self.explorer3(src,dest,visite,trajet,liste_puissance) #On utilise la fonction auxiliaire définie ci-dessus.
+    
     def new_power_min(self,src,dest):
         A=self.kruskal()
+        return A.new_get_path_with_power(src, dest)
         
 #Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers 'network' proposés dans le dossier 'input'.
 def graph_from_file(filename): 
