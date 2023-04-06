@@ -217,7 +217,7 @@ class Graph:
             return [L[0]]+self.fusionquadruplet(L[1 :len(L)],M)
         return [M[0]]+self.fusionquadruplet(M[1 :len(M)],L)
 
-    #On développe enfin la fonctio, qui renvoie l'arbre couvrant de poids minimal du graphe
+    #On développe enfin la fonction, qui renvoie l'arbre couvrant de poids minimal du graphe
     def kruskal(self):
         E=Graph([])#Graphe (arbre) qu'on va vouloir renvoyer
         Liste=[] #Liste dans laquelle on va stocker des quadruplets (noeud1,noeud2,puissance,dist) --> C'est la liste qu'on triera
