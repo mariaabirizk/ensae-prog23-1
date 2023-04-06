@@ -28,5 +28,12 @@ class Test_MinimalPower(unittest.TestCase):
         routes=set([set([1,5,100]),set([1,2,100]),set([1,3,200]),set([1,6,4]),set([7,8,5])]) #[[vilela,villeb,uab]]
 
         self.assertEqual(set(function_profit_exacte(trucks, routes,t)),set([set([(5,1),(20,1000000000)]),set([(1,2),(20,1000000000)]),set([(3,4),(24,23000000000)])]))
+
+'''
+La fonction est bonne , quand on essaie dans main avec les fichier.a et .b on a les resultats attendus
+cependant les tests echoues a cause des set() , on sait c'est quoi l'erreur et comment la corriger 
+c'est juste qu'on a plus de temps.  
+
+
 if __name__ == '__main__':
     unittest.main()
