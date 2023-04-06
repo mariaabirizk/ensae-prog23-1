@@ -387,6 +387,51 @@ def Temps(g, filename):
     return Tmoy*(len(lignes)) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
 
 #Question 18
+#Méthode 1: methode naive, exacte mais non optimal
+#Pour la tester on a créé des fichiers dans input .a.in et .b.in
+def function_profit_exacte(fichier_trucks,fichier_routes,fichier_network): 
+       
+    lr=liste_from_file("input/"+fichier_routes)
+    g= graph_from_file("input/"+fichier_network)        
+    lt=liste_from_file("input/"+fichier_trucks) 
+
+    '''on veut tester toutes les listes possibles qu'on peut faire a partir du fichier routes et trouver dans 
+    chacune umax pour ensuite trouver le max de tous        
+    '''
+
+    import itertools
+    permutations= list(itertools.permutations(lr)) #liste ou sera stockés toutes les permutations
+
+    umax=0
+    resultat_final=[]
+    b= 25* (10**9)
+
+    for perm in permutations: #pour chaque element de la liste permutations cad chaque ensemble d'utilite
+        u=0
+        resultat=[]
+        depenses=0 #on definit depenses a l'intérieur de for pour que pour chaque perm la variable se réinitialise a 0
+        for i in range (0,len(perm)):
+            if depenses <= b:
+                p=g.min_power(perm[i][0],perm[i][1])
+                pmin=p[1]
+                for j in range(0,len(lt)):
+                    if lt[j][0]>= pmin:
+                        puiss= lt[j][0]
+                        c=lt[j][1]
+                        depenses=depenses+c
+                        if depenses<=b: #pour s'assurer qu'une fois rajouter on ne depassera pas cb
+                            resultat.append([(puiss,c),(perm[i][0],perm[i][1])])
+                            u=u+perm[i][2] 
+                        break   
+            else:
+                break
+        if u>= umax:
+            umax=u
+            resultat_final=resultat
+    return (umax,resultat_final)
+        
+
+
 
 #Fonction auxiliaire pour la question 18, qui sert à supprimer tous camions inutiles, parce que plus cher et moins efficace que d'autres.
 #Elle présuppose que les camions sont rangés par puissance croissante
@@ -401,7 +446,7 @@ def tri_des_camions(lignes):
     return list(reversed(L_reverse))
 #Complexité en O(n)
 
-#Méthode rapide mais non optimale
+#Méthode2, rapide mais non optimale
 def function_profit(fichier_trucks,fichier_routes,fichier_network):
     # je veux acceder aux lignes du fichier_routes, chaque ligne i>=1 represente le trajet i=(ville1,ville2) et son utilite i 
     lr=liste_from_file("input/"+ fichier_routes) #"lr" sera la liste des lignes du fichier route (chaque élément est de la forme [ville 1, ville 2, utilité]) 
@@ -419,18 +464,20 @@ def function_profit(fichier_trucks,fichier_routes,fichier_network):
     resultat=[]
     for i in range (0,len(lr)): #On parcourt toutes les routes dans l'ordre
         l=len(lr)
-        pmin=A.min_power_arbre(lr[l-i-1][0],lr[l-i-1][1],racine, parents) #On récupère la puissance minimale sur le trajet considéré
-        #On cherche le camion le moins cher qui permet d'effectuer le trajet
-        for j in range (0,len(lt)):
-            if lt[j][0]>= pmin:
-                puiss=lt[j][0]
-                c= lt[j][1]
-                depenses=depenses+c
-                break
-        if depenses>b:
+        if depenses<= b:
+            pmin=A.min_power_arbre(lr[l-i-1][0],lr[l-i-1][1],racine, parents) #On récupère la puissance minimale sur le trajet considéré
+            #On cherche le camion le moins cher qui permet d'effectuer le trajet
+            for j in range (0,len(lt)):
+                if lt[j][0]>= pmin:
+                    puiss=lt[j][0]
+                    c= lt[j][1]
+                    depenses=depenses+c
+                    if depenses<=b: #pour s'assurer qu'une fois rajouter on ne depassera pas cb
+                            resultat.append([(puiss,c),(lr[l-i-1][0],lr[l-i-1][1])])
+                            umax+=lr[l-i-1][2]   #On prend l'indice "l-i-1" car on veut sommer les utilités en partant des plus grandes utilités ("lr" est triée par ordre croissant d'utilité) 
+                    break
+        else:
             break
-        resultat.append([(puiss,c),(lr[l-i-1][0],lr[l-i-1][1])])
-        umax+=lr[l-i-1][2]   #On prend l'indice "l-i-1" car on veut sommer les utilités en partant des plus grandes utilités ("lr" est triée par ordre croissant d'utilité) 
     return (umax,resultat)
 
 def liste_from_file(filename):
