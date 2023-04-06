@@ -387,7 +387,7 @@ def Temps(g, filename):
     return Tmoy*(len(lignes)) #Multiplié par le nombre de trajets, on obtient le temps d'exécution global.
 
 #Question 18
-#Méthode 1: methode naive, exacte mais non optimal
+#Méthode 1:methode naive, exacte mais non optimal
 #Pour la tester on a créé des fichiers dans input .a.in et .b.in
 def function_profit_exacte(fichier_trucks,fichier_routes,fichier_network): 
        
