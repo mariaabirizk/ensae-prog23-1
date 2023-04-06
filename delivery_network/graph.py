@@ -276,7 +276,6 @@ class Graph:
             return parents
         visite[ville-1]=1 #On déclare 'ville' comme un ville visitée.
         for voisins in self.graph[ville]: #On parcourt tous les voisins de 'ville'.
-            print(voisins)
             voisin=voisins[0] #'voisin' désigne le numéro du noeud voisin
             if len(self.graph[voisin])==1 and visite[voisin-1]==0:
                 parents[voisin-1]=(ville,voisins[1],voisins[2])
@@ -285,7 +284,6 @@ class Graph:
                     return parents
             if visite[voisin-1]==0 :
                 parents[voisin-1]=(ville,voisins[1],voisins[2])
-                print(visite)
                 if self.explorer4(voisin,visite,parents) is not None:
                     return(self.explorer4(voisin,visite,parents))
                     
@@ -316,15 +314,18 @@ class Graph:
     def min_power_arbre(self, src, dest,racine,parent):
         L=list(reversed(self.trajet(src,racine,parent)))
         M=list(reversed(self.trajet(dest,racine,parent)))
-        while M[0]==L[0]:
-            M.pop(0)
-            L.pop(0)
-        route=list(reversed(M))+L
-        puissance =0
-        for l in route :
-            if puissance < l[1]:
-                puissance=l[1]
-        return puissance
+        if M==[] or L==[]:
+            return 0
+        else :
+            while L!=[] and M!=[] and M[0]==L[0]:
+                M.pop(0)
+                L.pop(0)
+            route=list(reversed(M))+L
+            puissance =0
+            for l in route :
+                if puissance < l[1]:
+                    puissance=l[1]
+            return puissance
 
 
 #Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers 'network' proposés dans le dossier 'input'.
@@ -407,7 +408,7 @@ def function_profit(fichier_trucks,fichier_routes,fichier_network):
     lr.sort(key=lambda x: x[2]) #On trie "lr" par ordre croissant d'utilité         
     g= graph_from_file("input/"+fichier_network) #On importe le graphe construit à partir du fichier texte demandé
     A=g.kruskal()
-    racine=A.graph[0][0]
+    racine=lr[0][0]
     parents=A.creer_parents(racine)
     lt=tri_des_camions(liste_from_file("input/"+fichier_trucks)) #On importe la liste des camions triée. Chaque élément est de la forme [puissance, coût]
 
