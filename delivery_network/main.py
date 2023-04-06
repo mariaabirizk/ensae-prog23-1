@@ -13,6 +13,6 @@ t.add_edge(2,5,7,1)
 t.add_edge(4,5,15,1)
 t.add_edge(4,6,6,1)
 
-print(t.kruskal().creer_parents(2))
+print(t.kruskal().min_power_arbre(6, 7, 1, t.kruskal().creer_parents(1)))
 
 '''print(function_profit("trucks.1.in.txt", "routes.1.in", "network.1.in"))'''

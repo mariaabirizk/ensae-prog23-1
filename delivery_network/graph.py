@@ -270,25 +270,32 @@ class Graph:
         trajet=[src]    #On initialise le trajet pour qu'il commence toujours par 'src'.
         return self.explorer3(src,dest,visite,trajet,liste_puissance) #On utilise la fonction auxiliaire définie ci-dessus.
     
-    def explorer4(self,ville,visite,parents,compteur):
-        visite[ville-1]=1 #On déclare 'ville' comme un ville visitée.
-        if sum(visite) == self.nb_nodes-1
+    #Fonction auxiliaire pour "creer_parents"
+    def explorer4(self,ville,visite,parents):
+        if sum(visite) == self.nb_nodes :
             return parents
+        visite[ville-1]=1 #On déclare 'ville' comme un ville visitée.
         for voisins in self.graph[ville]: #On parcourt tous les voisins de 'ville'.
+            print(voisins)
             voisin=voisins[0] #'voisin' désigne le numéro du noeud voisin
-            if visite[voisin-1]==0 : #On se place dans le cas où le voisin n'est pas visité, et on a assez de puissance pour aller le rejoindre.
-                parents[voisin-1]=ville
+            if len(self.graph[voisin])==1 and visite[voisin-1]==0:
+                parents[voisin-1]=(ville,voisins[1],voisins[2])
+                visite[voisin-1]=1
+                if sum(visite) == self.nb_nodes :
+                    return parents
+            if visite[voisin-1]==0 :
+                parents[voisin-1]=(ville,voisins[1],voisins[2])
                 print(visite)
-                if self.explorer4(voisin,visite,parents,compteur) is not None:
-                    return(self.explorer4(voisin,visite,parents,compteur))
+                if self.explorer4(voisin,visite,parents) is not None:
+                    return(self.explorer4(voisin,visite,parents))
                     
 
     #Fonction pour créer la liste des parents de chaque noeud du graphe
     def creer_parents(self,racine):
         parents=[[] for i in range (self.nb_nodes)]
         visite=[0 for i in range (self.nb_nodes)]
-        compteur=1  
-        return(self.explorer4(racine,visite,parents,compteur))
+        parents[racine-1]=racine  
+        return(self.explorer4(racine,visite,parents))
 
     def new_power_min(self,src,dest):
         A=self.kruskal()
@@ -297,24 +304,26 @@ class Graph:
     def new_new_power_min(self,src,dest):
         return self.new_get_path_with_power(src, dest)
     
-    def trajet(self,ville):
+    def trajet(self,ville,racine,parent):
         t=ville
-        route=[ville]
+        route=[]
         while t!=racine:
-            t=parent[t-1] 
-            route.append(t)
+            route.append(parent[t-1])
+            t=parent[t-1][0] 
         return(route)
+    
     #creer_parent est déjà construite
-    def min_power_arbre(self, src, dest):
-        L=self.trajet(src)
-        M=self.trajet(dest)
+    def min_power_arbre(self, src, dest,racine,parent):
+        L=list(reversed(self.trajet(src,racine,parent)))
+        M=list(reversed(self.trajet(dest,racine,parent)))
         while M[0]==L[0]:
             M.pop(0)
             L.pop(0)
-        trajet=reversed(M)+L
+        route=list(reversed(M))+L
         puissance =0
-        for l in trajet :
-            puissance+=l[2]
+        for l in route :
+            if puissance < l[1]:
+                puissance=l[1]
         return puissance
 
 
@@ -398,6 +407,8 @@ def function_profit(fichier_trucks,fichier_routes,fichier_network):
     lr.sort(key=lambda x: x[2]) #On trie "lr" par ordre croissant d'utilité         
     g= graph_from_file("input/"+fichier_network) #On importe le graphe construit à partir du fichier texte demandé
     A=g.kruskal()
+    racine=A.graph[0][0]
+    parents=A.creer_parents(racine)
     lt=tri_des_camions(liste_from_file("input/"+fichier_trucks)) #On importe la liste des camions triée. Chaque élément est de la forme [puissance, coût]
 
     b= 25*(10**9) #Contrainte budgétaire
@@ -407,7 +418,7 @@ def function_profit(fichier_trucks,fichier_routes,fichier_network):
     resultat=[]
     for i in range (0,len(lr)): #On parcourt toutes les routes dans l'ordre
         l=len(lr)
-        pmin=A.new_new_power_min(lr[l-i-1][0],lr[l-i-1][1])[1] #On récupère la puissance minimale sur le trajet considéré
+        pmin=A.min_power_arbre(lr[l-i-1][0],lr[l-i-1][1],racine, parents) #On récupère la puissance minimale sur le trajet considéré
         #On cherche le camion le moins cher qui permet d'effectuer le trajet
         for j in range (0,len(lt)):
             if lt[j][0]>= pmin:
