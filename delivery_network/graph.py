@@ -270,12 +270,53 @@ class Graph:
         trajet=[src]    #On initialise le trajet pour qu'il commence toujours par 'src'.
         return self.explorer3(src,dest,visite,trajet,liste_puissance) #On utilise la fonction auxiliaire définie ci-dessus.
     
+    def explorer4(self,ville,visite,parents,compteur):
+        visite[ville-1]=1 #On déclare 'ville' comme un ville visitée.
+        if sum(visite) == self.nb_nodes-1
+            return parents
+        for voisins in self.graph[ville]: #On parcourt tous les voisins de 'ville'.
+            voisin=voisins[0] #'voisin' désigne le numéro du noeud voisin
+            if visite[voisin-1]==0 : #On se place dans le cas où le voisin n'est pas visité, et on a assez de puissance pour aller le rejoindre.
+                parents[voisin-1]=ville
+                print(visite)
+                if self.explorer4(voisin,visite,parents,compteur) is not None:
+                    return(self.explorer4(voisin,visite,parents,compteur))
+                    
+
+    #Fonction pour créer la liste des parents de chaque noeud du graphe
+    def creer_parents(self,racine):
+        parents=[[] for i in range (self.nb_nodes)]
+        visite=[0 for i in range (self.nb_nodes)]
+        compteur=1  
+        return(self.explorer4(racine,visite,parents,compteur))
+
     def new_power_min(self,src,dest):
         A=self.kruskal()
         return A.new_get_path_with_power(src, dest)
     
     def new_new_power_min(self,src,dest):
         return self.new_get_path_with_power(src, dest)
+    
+    def trajet(self,ville):
+        t=ville
+        route=[ville]
+        while t!=racine:
+            t=parent[t-1] 
+            route.append(t)
+        return(route)
+    #creer_parent est déjà construite
+    def min_power_arbre(self, src, dest):
+        L=self.trajet(src)
+        M=self.trajet(dest)
+        while M[0]==L[0]:
+            M.pop(0)
+            L.pop(0)
+        trajet=reversed(M)+L
+        puissance =0
+        for l in trajet :
+            puissance+=l[2]
+        return puissance
+
 
 #Cette fonction ne marche qu'avec des tableaux d'entiers, comme dans les fichiers 'network' proposés dans le dossier 'input'.
 def graph_from_file(filename): 
