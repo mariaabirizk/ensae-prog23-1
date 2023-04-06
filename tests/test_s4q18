@@ -33,6 +33,7 @@ class Test_MinimalPower(unittest.TestCase):
 La fonction est bonne , quand on essaie dans main avec les fichier.a et .b on a les resultats attendus
 cependant les tests echoues a cause des set() , on sait c'est quoi l'erreur et comment la corriger 
 c'est juste qu'on a plus de temps.  
+'''
 
 
 if __name__ == '__main__':
